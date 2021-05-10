@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+ini_set('max_execution_time', 3600);
 class CronicosExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents, WithStyles, WithMapping
 {
     /**
@@ -67,7 +68,7 @@ class CronicosExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
         $fe1o = "fecha_estructuracion_1_oport ";
 
         $cronico = $invoice;
-        $cronico->ano_notificacion = ($cronico->fecha_notificacion != '')?(
+        $cronico->ano_notificacion = (strtotime($cronico->fecha_notificacion))?(
             (date('Y',strtotime($cronico->fecha_notificacion))=='1900')?
             '2019':(
                 (date('Y',strtotime($cronico->fecha_notificacion))<='2015')?'Años Anteriores':(
@@ -107,8 +108,8 @@ class CronicosExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
         $cronico->fecha_dia_540 = date('d/m/Y',86400*((strtotime($cronico->fecha_it_inicio_ciclo)/86400)+540-1));
 
         $tmp = "fecha_emision_crh1_(antes_del_180)";
-        $cronico->ano_emision_crh1 = ($cronico->$tmp>=2018)?date('Y',strtotime($cronico->$tmp)):"Años Anteriores";
-        $cronico->mes_emision_crh1 = ($cronico->$tmp>=2018)?date('m',strtotime($cronico->$tmp)):"Años Anteriores";
+        $cronico->ano_emision_crh1 = ($cronico->$tmp>=2018 && strtotime($cronico->$tmp))?date('Y',strtotime($cronico->$tmp)):(($cronico->$tmp && strtotime($cronico->$tmp) && $cronico->$tmp<2018)?"Años Anteriores":'');
+        $cronico->mes_emision_crh1 = ($cronico->$tmp>=2018 && strtotime($cronico->$tmp))?date('m',strtotime($cronico->$tmp)):(($cronico->$tmp && strtotime($cronico->$tmp) && $cronico->$tmp<2018)?"Años Anteriores":'');
 
         $cronico->oportunidad_a_crh1=($cronico->dias_acumulados_a_crh1<=0)?"No Aplica":(
             ($cronico->dias_acumulados_a_crh1>1 && $cronico->dias_acumulados_a_crh1<=150)?"1. Oportuno":(
@@ -116,11 +117,12 @@ class CronicosExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
             )
         );
 
-        $cronico->rango_cpclo_cierre = ($rdf<25)?"01. Menor 25%":(
-            ($rdf>=25 && $rdf<36)?"02. Entre 25% a 35%":(
-                ($rdf>=36 && $rdf<46)?"03. Entre 36% a 45%":(
-                    ($rdf>=46 && $rdf<50)?"04. Entre 46% a 49%":(
-                        ($rdf>=50)?"05. Entre Mayor 50%":""))));
+        $cpcloc = $cronico->cpclo_cierre ;
+        $cronico->rango_cpclo_cierre = ($cpcloc<25 && trim ($cpcloc))?"01. Menor 25%":(
+            ($cpcloc>=25 && $cpcloc<36)?"02. Entre 25% a 35%":(
+                ($cpcloc>=36 && $cpcloc<46)?"03. Entre 36% a 45%":(
+                    ($cpcloc>=46 && $cpcloc<50)?"04. Entre 46% a 49%":(
+                        ($cpcloc>=50)?"05. Entre Mayor 50%":""))));
 
         $invoice = $cronico;
 

@@ -15,12 +15,12 @@ class LicenciasExport implements FromCollection, WithHeadings, ShouldAutoSize
     */
 
     protected $licencias;
- 
+
     public function __construct($licencias= null)
     {
         $this->licencias = $licencias;
     }
-    
+
     /**
     * @return \Illuminate\Support\Collection
     */
@@ -33,46 +33,46 @@ class LicenciasExport implements FromCollection, WithHeadings, ShouldAutoSize
     public function headings(): array
     {
         return [
-            'id',             
+            'id',
             'tipo_documento_afiliado',
             'num_documento_afiliado',
             'nombre_afiliado',
             'estado_afiliado',
             'tipo_cotizante',
             'programa_afiliado',
-    
-            'tipo_prestador',
-            'ips',
-            'medico_id',
-           
-    
-            'contingencia_origen',
             'fecha_atencion',
             'fecha_inicio_licencia',
+            'fecha_fin_licencia',
+            'dias_solicitados',
+            'tipo_licencia',
+            'descripcion_tipo_licencia',
+            'contingencia_origen',
+            'descripcion_contingencia_origen',
+            'codigo_diagnostico',
+            'codigo_diagnostico1',
+            'codigo_diagnostico2',
+            'codigo_diagnostico3',
             'causa_externa',
+            'causae.causa_externa as descripcion_causa_externa',
+            'tipo_prestador',
+            'ips',
+            'ips.nit as NIT_IPS',
+            'ips.nombre_sede as NOMBRE_IPS',
+            'medico_id',
+            'medicos.nombre as medico',
+            'especialidad_medico',
             'tipo_atencion',
             'edad_gestacional_semanas',
             'edad_gestacional_dias',
             'dias_gestacion',
             'recien_nacido_viable',
-            'tipo_licencia',
-    
-            'codigo_diagnostico',
-            'codigo_diagnostico1',
-            'codigo_diagnostico2',
-            'codigo_diagnostico3',
-            
-            'dias_solicitados',
-            'fecha_fin_licencia',
-           
-            'observacion',
             'estado_id',
-            'observacion_estado',
-            'created_at',	
-            'updated_at',
-            'delete_at',
+            'estados_incapacidad.estado as descripcion_estado',
+            'observacion',
             'aportantes',
-            'validacion'
+            'created_at',
+            'updated_at',
+            'deleted_at',
         ];
     }
 }

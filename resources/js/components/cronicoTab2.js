@@ -342,6 +342,7 @@ class CronicoTab2 extends Component {
                                                         <option value="AFP">AFP</option>
                                                         <option value="ARL">ARL</option>
                                                         <option value="EPS">EPS</option>
+                                                        <option value="ASEGURADORA">ASEGURADORA</option>
                                                     </select>
                                                 </td>
                                             </tr>
