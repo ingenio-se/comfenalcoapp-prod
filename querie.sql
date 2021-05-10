@@ -1,3 +1,4 @@
-select * from incapacidad
+select * from licencia
+
 
 
