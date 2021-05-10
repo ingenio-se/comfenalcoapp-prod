@@ -9,6 +9,8 @@ import AutocompleteDescripcionL from './AutocompleteDescripcionL.js';
 import ValidacionDerechos from './ValidacionDerechos';
 import { size } from 'lodash';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 class LicenciaFront extends Component {
@@ -148,6 +150,7 @@ class LicenciaFront extends Component {
         this.renderAfiliaciones=this.renderAfiliaciones.bind(this);
         this.renderAportantes=this.renderAportantes.bind(this);
         this.generarCertificado=this.generarCertificado.bind(this);
+        this.handleToast = this.handleToast.bind(this);
 
         /*
         this.handlePrestador = this.handlePrestador.bind(this);
@@ -181,9 +184,27 @@ class LicenciaFront extends Component {
             .catch(err => {
                 console.log(err)
             })
-
-            
     }
+
+    handleToast(arg,type) {
+        const toastOptions = {
+            success: 'success',
+            error: 'error',
+            info: 'info',
+            warning: 'warn'
+        }
+        const toastType = toastOptions[type]
+        toast[toastType](arg, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
     generarCertificado(a){
         let id=this.state.id;
         let pid= this.state.prorrogaId;
@@ -272,7 +293,7 @@ class LicenciaFront extends Component {
                 })
             .then(response => {
                 // console
-                //console.log(response);
+                // console.log('target response: ', response);
 
                 let mensaje = response.data.responseMessageOut.body.response.validadorResponse.Derechos['MENSAJE'];
                 let derecho = response.data.responseMessageOut.body.response.validadorResponse.Derechos['DerechoPrestacion']
@@ -416,7 +437,8 @@ class LicenciaFront extends Component {
                         fechaProbableState: 'visible', 
                         diasSolicitados: 7,
                       });
-                    alert("Los días solicitados pueden ser 7 o 14 días")
+                    // alert("Los días solicitados pueden ser 7 o 14 días")
+                    this.handleToast("Los días solicitados pueden ser 7 o 14 días",'warning');
                 }
                 else{
                     this.setState({
@@ -525,7 +547,8 @@ class LicenciaFront extends Component {
             band=true;
         }
         else if ((tipoLicencia == "2" && (tipoAtencion =="2" || tipoAtencion=="3"))|| (tipoLicencia == "2" && tipoAtencion=="1" && rnv == 0)){
-            alert("Puede escoger 14 o 28 días máximo")
+            // alert("Puede escoger 14 o 28 días máximo")
+            this.handleToast("Puede escoger 14 o 28 días máximo",'warning');
             this.setState({
                 diasSolicitados: 14
             });
@@ -553,19 +576,23 @@ class LicenciaFront extends Component {
         }
         
         if (tipoLicencia == "3" && this.state.medico_id !=0){
-            alert("Esta licencia NO la generan los médicos, es administrativa por solicitud del aportante.")
+            // alert("Esta licencia NO la generan los médicos, es administrativa por solicitud del aportante.")
+            this.handleToast("Esta licencia NO la generan los médicos, es administrativa por solicitud del aportante.",'warning');
         }
         if (tipoLicencia == "10" && this.state.medico_id !=0){
-            alert("La licencia se da al padre, se resuelve por via administrativa no la generan los medicos. Solicitar ante la EPS")
+            // alert("La licencia se da al padre, se resuelve por via administrativa no la generan los medicos. Solicitar ante la EPS")
+            this.handleToast("La licencia se da al padre, se resuelve por via administrativa no la generan los medicos. Solicitar ante la EPS",'warning');
         }
         if (tipoLicencia == "12"  || tipoLicencia == "13" || tipoLicencia == "14"  ){
-            alert("La licencia la da la EPS. Se resuelve por via administrativa. Se debe mostrar aviso para solicitar ante la EPS")
+            // alert("La licencia la da la EPS. Se resuelve por via administrativa. Se debe mostrar aviso para solicitar ante la EPS")
+            this.handleToast("La licencia la da la EPS. Se resuelve por via administrativa. Se debe mostrar aviso para solicitar ante la EPS",'warning');
         }
         if (tipoLicencia == "15"  ){
             band=true
         }
         if (band == false){
-            alert("No cumple las condiciones para este tipo de licencia")
+            // alert("No cumple las condiciones para este tipo de licencia")
+            this.handleToast("No cumple las condiciones para este tipo de licencia",'warning');
             this.setState({
                 tipoLicencia:'',
                 diasSolicitados: 0
@@ -656,7 +683,8 @@ class LicenciaFront extends Component {
         }
         */
         if (fi < l2) {
-            alert("La fecha de inicio no puede ser menor a 30 días desde la fecha de atención. Debe justificarlo en observacion")
+            // alert("La fecha de inicio no puede ser menor a 30 días desde la fecha de atención. Debe justificarlo en observacion")
+            this.handleToast("La fecha de inicio no puede ser menor a 30 días desde la fecha de atención. Debe justificarlo en observacion",'warning');
             this.setState({
                 fechaInicioIncapacidad: new Date().toISOString().slice(0, 10),
             });
@@ -743,7 +771,8 @@ class LicenciaFront extends Component {
         var contingencia = e.target.value;
         var causae = this.state.causae
         if ((contingencia == 2 || contingencia == 3) && (causae != 1 && causae != 14)) {
-            alert("la causa externa solo puede ser Accidente de trabajo o Enfermedad laboral")
+            // alert("la causa externa solo puede ser Accidente de trabajo o Enfermedad laboral")
+            this.handleToast("la causa externa solo puede ser Accidente de trabajo o Enfermedad laboral",'warning');
             this.setState({
                 causae: '',
             });
@@ -775,12 +804,15 @@ class LicenciaFront extends Component {
             diasReconocidos: reconocidos
         });
     }
-    guardarLicencia() {
+    guardarLicencia({target}) {
+        target.disabled = true;
         //console.log(this.state)
         //console.log(parseInt(this.state.diasSolicitados));
         //let resp = this.validarForm()
         if (this.state.fechaInicioLicencia == this.state.fechaFinLicencia){
-            alert("Verifique la fecha fin de licencia ")
+            // alert("Verifique la fecha fin de licencia ")
+            this.handleToast("Verifique la fecha fin de licencia ",'warning');
+            setTimeout(target.disabled = false, 3000);
         }
         else{
             let resp = this.validarForm()
@@ -790,19 +822,25 @@ class LicenciaFront extends Component {
                     axios.post(url, { datos: this.state })
                         .then(resp => {
                             console.log(resp.data)
-                            alert(resp.data)
+                            // alert(resp.data)
                             //this.setState(this.initialState);
                             //location.reload();
+                            this.handleToast(resp.data,'success');
+                            setTimeout(target.disabled = false,1500);
                             this.setState({
                                 flagCertificado: ''
                             })
                         })
                         .catch(err => {
                             console.log(err)
+                            this.handleToast(err,'error');
+                            setTimeout(target.disabled = false,1500);
                         })
             }
             else {
-                alert("Hay errores en algunos campos");
+                // alert("Hay errores en algunos campos");
+                this.handleToast("Hay errores en algunos campos",'error');
+                setTimeout(target.disabled = false,1500);
             }
         }
         /*
@@ -1047,10 +1085,8 @@ class LicenciaFront extends Component {
         }
 
         return (
-
-
-
             <div className="container">
+                <ToastContainer/>
                 <div className="row justify-content-center">
                     <div className="col-md-10">
                         <div className="card">

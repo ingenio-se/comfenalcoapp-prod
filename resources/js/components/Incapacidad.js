@@ -791,7 +791,6 @@ class IncapacidadFront extends Component {
     }
     async guardarIncapacidad({target}){
         target.disabled = true;
-        console.log('target buttonClicked: ', target.disabled);
         //console.log(this.state)
         //console.log(parseInt(this.state.diasSolicitados));
         var esp = "otros"
@@ -810,11 +809,10 @@ class IncapacidadFront extends Component {
                         let url = 'saveIncapacidad'
                         axios.post(url, { datos: this.state })
                             .then(resp => {
-                                target.disabled = false;
                                 console.log(resp.data)
                                 // alert(resp.data)
                                 this.handleToast(resp.data,'success');
-                                target.disabled = false;
+                                setTimeout(target.disabled = false,1500);
                                 //this.setState(this.initialState);
                             // location.reload();
                             this.setState({
@@ -824,13 +822,13 @@ class IncapacidadFront extends Component {
                             .catch(err => {
                                 console.log(err)
                                 this.handleToast(err,'error');
-                                target.disabled = false;
+                                setTimeout(target.disabled = false,1500);
                             })
                     }
                     else{
                         // alert("Hay errores en algunos campos");
                         this.handleToast("Hay errores en algunos campos",'error');
-                        target.disabled = false;
+                        setTimeout(target.disabled = false,1500);
                     }
             }
             else{
@@ -851,7 +849,7 @@ class IncapacidadFront extends Component {
                                 console.log(resp.data)
                                 // alert(resp.data)
                                 this.handleToast(resp.data,'success');
-                                target.disabled = false;
+                                setTimeout(target.disabled = false,1500);
                                 //this.setState(this.initialState);
                             // location.reload();
                             this.setState({
@@ -861,13 +859,13 @@ class IncapacidadFront extends Component {
                             .catch(err => {
                                 console.log(err)
                                 this.handleToast(err,'error');
-                                target.disabled = false;
+                                setTimeout(target.disabled = false,1500);
                             })
                     }
                     else{
                         // alert("Hay errores en algunos campos 2");
                         this.handleToast("Hay errores en algunos campos",'error');
-                        target.disabled = false;
+                        setTimeout(target.disabled = false,1500);
                     }
         }
     }

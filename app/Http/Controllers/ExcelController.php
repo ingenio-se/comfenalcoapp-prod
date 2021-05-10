@@ -65,7 +65,7 @@ class ExcelController extends Controller
                 'ips.nit as NIT_IPS',
                 'ips.nombre_sede as NOMBRE_IPS',
                 'medicos.nombre as medico',
-                DB::raw("CASE contingencia_origen
+                DB::raw("CASE medicos.especialidad
                         WHEN 1 THEN 'Médico general'
                         WHEN 2 THEN 'Médico especialista'
                         WHEN 3 THEN 'Odontólogo general'
@@ -91,22 +91,22 @@ class ExcelController extends Controller
             ->leftJoin('medicos','medicos.id','=','incapacidad.medico_id')
             ->where('incapacidad.id','>',0);
             if ($datos['ips']!=""){
-                $i->where('ips',$datos['ips']);
+                $i->where('incapacidad.ips',$datos['ips']);
             }
             if ($datos['medico']!=""){
-                $i->where('medico_id',$datos['medico']);
+                $i->where('incapacidad.medico_id',$datos['medico']);
             }
             if ($datos['paciente']!=""){
-                $i->where('num_documento_afiliado',$datos['paciente']);
+                $i->where('incapacidad.num_documento_afiliado',$datos['paciente']);
             }
             if ($datos['codigoDiagnostico']!=""){
-                $i->where('codigo_diagnostico',$datos['codigoDiagnostico']);
+                $i->where('incapacidad.codigo_diagnostico',$datos['codigoDiagnostico']);
             }
             if ($datos['contingencia']!=""){
-                $i->where('contingencia_origen',$datos['contingencia']);
+                $i->where('incapacidad.contingencia_origen',$datos['contingencia']);
             }
             if ($datos['soat']=="si"){
-                $i->where('causa_externa',2);
+                $i->where('incapacidad.causa_externa',2);
             }
             if (($datos['desde']!="")&&($datos['hasta']!="")){
                 $desde = $desde." 00:00:00";
@@ -160,18 +160,82 @@ class ExcelController extends Controller
             $hasta = $datos['hasta'];
 
 
-            $i = Licencia::where('id','>',0);
+            $i = Licencia::select(
+                'licencias.id',
+                'tipo_documento_afiliado',
+                'num_documento_afiliado',
+                'nombre_afiliado',
+                'estado_afiliado',
+                'tipo_cotizante',
+                'programa_afiliado',
+                'fecha_atencion',
+                'fecha_inicio_licencia',
+                'fecha_fin_licencia',
+                'dias_solicitados',
+                'tipo_licencia',
+                DB::raw("CASE tipo_licencia
+                        WHEN 1 THEN 'Maternidad Normal'
+                        WHEN 2 THEN 'Parto no viable'
+                        WHEN 3 THEN 'Paternidad'
+                        WHEN 4 THEN 'Parto prematuro'
+                        WHEN 5 THEN 'Parto normal múltiple'
+                        WHEN 6 THEN 'Parto prematuro múltiple'
+                        WHEN 10 THEN 'Fallecimiento de la madre'
+                        WHEN 12 THEN 'Fallo de tutela'
+                        WHEN 13 THEN 'Enfermedad materna grave'
+                        WHEN 14 THEN 'Adopción'
+                        WHEN 15 THEN 'Prelicencia en época de parto (anticipo)'
+                    ELSE '' END AS descripcion_tipo_licencia"),
+                'contingencia_origen',
+                DB::raw("CASE contingencia_origen
+                        WHEN 1 THEN 'Licencia'
+                    ELSE '' END AS descripcion_contingencia_origen"),
+                'codigo_diagnostico',
+                'codigo_diagnostico1',
+                'codigo_diagnostico2',
+                'codigo_diagnostico3',
+                'licencias.causa_externa',
+                'causae.causa_externa as descripcion_causa_externa',
+                'tipo_prestador',
+                'licencias.ips',
+                'ips.nit as NIT_IPS',
+                'ips.nombre_sede as NOMBRE_IPS',
+                'licencias.medico_id',
+                'medicos.nombre as medico',
+                DB::raw("CASE medicos.especialidad
+                        WHEN 1 THEN 'Médico general'
+                        WHEN 2 THEN 'Médico especialista'
+                        WHEN 3 THEN 'Odontólogo general'
+                        WHEN 4 THEN 'Odontólogo especialista'
+                    ELSE '' END AS especialidad_medico"),
+                'tipo_atencion',
+                'edad_gestacional_semanas',
+                'edad_gestacional_dias',
+                'dias_gestacion',
+                'recien_nacido_viable',
+                'licencias.estado_id',
+                'estados_incapacidad.estado as descripcion_estado',
+                'observacion',
+                'aportantes',
+                'licencias.created_at',
+                'licencias.updated_at',
+                'licencias.deleted_at',
+            )->leftJoin('causae','causae.id','=','licencias.causa_externa')
+            ->leftJoin('ips','ips.id','=','licencias.ips')
+            ->leftJoin('medicos','medicos.id','=','licencias.medico_id')
+            ->leftJoin('estados_incapacidad','estados_incapacidad.id','=','licencias.estado_id')
+            ->where('licencias.id','>',0);
             if ($datos['ips']!=""){
-                $i->where('ips',$datos['ips']);
+                $i->where('licencias.ips',$datos['ips']);
             }
             if ($datos['medico']!=""){
-                $i->where('medico_id',$datos['medico']);
+                $i->where('licencias.medico_id',$datos['medico']);
             }
             if ($datos['paciente']!=""){
-                $i->where('num_documento_afiliado',$datos['paciente']);
+                $i->where('licencias.num_documento_afiliado',$datos['paciente']);
             }
             if ($datos['tipoLicencia']!=""){
-                $i->where('tipo_licencia',$datos['tipoLicencia']);
+                $i->where('licencias.tipo_licencia',$datos['tipoLicencia']);
             }
             /*
             if ($datos['codigoDiagnostico']!=""){
