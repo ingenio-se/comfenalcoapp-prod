@@ -1,0 +1,1 @@
+openssl req -newkey rsa:2048 -keyout comfenalco.key -out comfenalco.csr

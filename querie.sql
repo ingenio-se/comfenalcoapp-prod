@@ -1,2 +1,3 @@
-select * from medicos where user_id = 207
+select * from incapacidad
+
 
