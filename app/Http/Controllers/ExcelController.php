@@ -248,7 +248,7 @@ class ExcelController extends Controller
                 $i->where('causa_externa',2);
             }*/
             if (($datos['desde']!="")&&($datos['hasta']!="")){
-                $i->whereBetween('created_at', [$desde, $hasta]);
+                $i->whereBetween('licencias.created_at', [$desde, $hasta]);
             }
             $totales=array();
             $totales["total"]=$i->count();
