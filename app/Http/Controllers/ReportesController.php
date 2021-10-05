@@ -82,7 +82,7 @@ class ReportesController extends Controller
         ->leftJoin('medicos','medicos.id','=','incapacidad.medico_id')
         ->where('incapacidad.id','>',0);
         if ($datos['ips']!=""){
-            $i->where('incapacidad.incapacidad.ips',$datos['ips']);
+            $i->where('incapacidad.ips',$datos['ips']);
         }
         if ($datos['medico']!=""){
             $i->where('incapacidad.medico_id',$datos['medico']);
