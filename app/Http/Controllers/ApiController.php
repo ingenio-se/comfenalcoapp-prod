@@ -180,8 +180,8 @@ class ApiController extends Controller
     public function saveIncapacidad(Request $request){
             $datos = $request->datos;
             
-            if ($datos['prorroga']=="No"){
-                if(Incapacidad::latest()->first() !== null){
+            /*if ($datos['prorroga']=="No"){
+                if(Incapacidad::orderBy('id','desc')->first()->first() !== null){
                     $id = Incapacidad::latest()->where('prorrogaId',0)->first()->id;
                     $id+=1;
                 }
@@ -191,7 +191,8 @@ class ApiController extends Controller
             }
             else{
                 $id =(int)$datos['id'];
-            }       
+            }*/
+            $id =(int)$datos['id'];
 
             if (Incapacidad::where('id',$id)->where('prorrogaid',$datos['prorrogaId'])->exists()){
                 return "La incapacidad ya se encuentra almacenada";
@@ -383,7 +384,7 @@ class ApiController extends Controller
 
     //gets
     public function getNumeroIncapacidad(){
-        if(Incapacidad::latest()->first() !== null){
+        /*if(Incapacidad::latest()->first() !== null){
          $id = Incapacidad::latest()->where('prorrogaId',0)->first()->id;
          $id+=1;
         }
@@ -392,7 +393,17 @@ class ApiController extends Controller
         }        
         return response()->json([
             'data' => $id
-        ]);
+        ]);**/
+        if(Incapacidad::orderBy('id','desc')->first() !== null){
+            $id = Incapacidad::orderBy('id','desc')->first()->id;
+            $id+=1;
+           }
+           else{
+               $id=1;
+           }        
+           return response()->json([
+               'data' => $id
+           ]);
 
     }
     public function getNumeroLicencia(){
@@ -521,17 +532,19 @@ class ApiController extends Controller
     }
     //certificados
 
-    public function certificadoIncapacidad($id,$pid,$a){
+    public function certificadoIncapacidad($id,$pid,$a,$tipodoc,$idtr){
         
        // dd( $formatter->toWords(126, 0));
 
-        if (!Incapacidad::where('id',$id)->where('prorrogaid',$pid)->exists()){
+        if (!Incapacidad::where('id',$id)->where('prorrogaid',$pid)->where('tipo_documento_afiliado',$tipodoc)
+        ->where('num_documento_afiliado',$idtr)->exists()){
             dd("La incapacidad no se encuentra almacenada");
         }
 
         $formatter = new NumeroALetras;
         $fechahora= Carbon::now();
-        $d =Incapacidad::where('id',$id)->where('prorrogaid',$pid)->first();
+        $d =Incapacidad::where('id',$id)->where('prorrogaid',$pid)->where('tipo_documento_afiliado',$tipodoc)
+        ->where('num_documento_afiliado',$idtr)->first();
         
         $tipoDoc = $d->tipo_documento_afiliado;
         $numDoc = $d->num_documento_afiliado;

@@ -167,8 +167,10 @@ class IncapacidadFront extends Component {
         console.log(a)
         let id=this.state.id;
         let pid= this.state.prorrogaId;
+        let tipoDoc= this.state.tipoDocAfiliado;
+        let IDTrabajador = this.state.IDTrabajador;
         //let id=56;
-        let url = '/certificadoIncapacidad/'+id+"/"+pid+"/"+a;
+        let url = '/certificadoIncapacidad/'+id+"/"+pid+"/"+a+"/"+tipoDoc+"/"+IDTrabajador;
         window.open(url,"_blank");
         //location.reload();
     }
@@ -205,7 +207,7 @@ class IncapacidadFront extends Component {
         axios.get(url)
             .then(resp => {
                 this.setState({
-                    id:`0000${resp.data.data}`,
+                    id:`${resp.data.data}`,
                     prorrogaId:0,
                 });
                 return;
@@ -510,7 +512,7 @@ class IncapacidadFront extends Component {
                 console.log(resp.data)
 
                 if (resp.data.capitulo == this.state.capitulo) {
-                    let id = "0000" + resp.data.idant;
+                    let id =  resp.data.idant;
                     let prorrogaId = resp.data.prorrogaidant + 1;
                     //console.log(prorrogaId);
 
