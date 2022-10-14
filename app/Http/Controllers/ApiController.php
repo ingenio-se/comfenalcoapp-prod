@@ -194,7 +194,10 @@ class ApiController extends Controller
             }*/
             $id =(int)$datos['id'];
 
-            if (Incapacidad::where('id',$id)->where('prorrogaid',$datos['prorrogaId'])->exists()){
+            if (Incapacidad::where('id',$id)->where('prorrogaid',$datos['prorrogaId'])
+                ->where('tipo_documento_afiliado',$datos['tipoDocAfiliado'])
+                ->where('num_documento_afiliado',$datos['IDTrabajador'])
+                ->exists()){
                 return "La incapacidad ya se encuentra almacenada";
             }
             else{

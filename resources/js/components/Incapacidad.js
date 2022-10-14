@@ -944,7 +944,7 @@ class IncapacidadFront extends Component {
         this.setState(newState);
 
         if (this.state.prorroga=="No"){
-            await this.getNumeroIncapacidad();
+           // await this.getNumeroIncapacidad();
         }
         //alert(resp)
         return resp;
