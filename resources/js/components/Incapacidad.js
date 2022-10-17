@@ -167,8 +167,10 @@ class IncapacidadFront extends Component {
         console.log(a)
         let id=this.state.id;
         let pid= this.state.prorrogaId;
+        let tipoDoc= this.state.tipoDocAfiliado;
+        let IDTrabajador = this.state.IDTrabajador;
         //let id=56;
-        let url = '/certificadoIncapacidad/'+id+"/"+pid+"/"+a;
+        let url = '/certificadoIncapacidad/'+id+"/"+pid+"/"+a+"/"+tipoDoc+"/"+IDTrabajador;
         window.open(url,"_blank");
         //location.reload();
     }
@@ -205,7 +207,7 @@ class IncapacidadFront extends Component {
         axios.get(url)
             .then(resp => {
                 this.setState({
-                    id:`0000${resp.data.data}`,
+                    id:`${resp.data.data}`,
                     prorrogaId:0,
                 });
                 return;
@@ -510,7 +512,7 @@ class IncapacidadFront extends Component {
                 console.log(resp.data)
 
                 if (resp.data.capitulo == this.state.capitulo) {
-                    let id = "0000" + resp.data.idant;
+                    let id =  resp.data.idant;
                     let prorrogaId = resp.data.prorrogaidant + 1;
                     //console.log(prorrogaId);
 
@@ -769,7 +771,8 @@ class IncapacidadFront extends Component {
         var countf = 0;
         var festivos = ["2020-05-01","2020-05-25","2020-06-15","2020-06-22","2020-06-29","2020-07-20","2020-08-07","2020-08-17","2020-10-12","2020-11-02","2020-11-16","2020-12-08","2020-12-25",
                         "2021-01-01","2021-01-11","2021-03-22","2021-04-01","2021-04-02","2021-05-01","2021-05-17","2021-06-03","2021-06-14","2021-07-05","2021-07-20","2021-08-07","2021-08-16",
-                        "2021-10-18","2021-11-01","2021-11-15","2021-12-08","2021-12-25"];
+                        "2021-10-18","2021-11-01","2021-11-15","2021-12-08","2021-12-25",
+                        ];
         var curDate = startDate;
         while (curDate <= endDate) {
             var dayOfWeek = curDate.getDay();
@@ -942,7 +945,7 @@ class IncapacidadFront extends Component {
         this.setState(newState);
 
         if (this.state.prorroga=="No"){
-            await this.getNumeroIncapacidad();
+           // await this.getNumeroIncapacidad();
         }
         //alert(resp)
         return resp;
