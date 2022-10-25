@@ -44,7 +44,7 @@
                         <td>
                        
                         @for ($i =0; $i < count($aportantes) ; $i++)
-                            <button class='btn btn-default' type='button' value='print' onclick='print({{$dato->id}},{{$dato->prorrogaid}},{{ $i }},{{ $datos[0]->tipo_documento_afiliado}},{{ $datos[0]->num_documento_afiliado }})'>
+                            <button class='btn btn-default' type='button' value='print' onclick="print({{$dato->id}},{{$dato->prorrogaid}},{{ $i }},'{{ $datos[0]->tipo_documento_afiliado}}','{{ $datos[0]->num_documento_afiliado }}')">
                             {{ $i+1 }}
                                 <i class='fa fa-print'> </i>
                             </button>
