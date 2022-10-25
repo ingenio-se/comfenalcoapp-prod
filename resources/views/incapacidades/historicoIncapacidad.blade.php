@@ -44,7 +44,7 @@
                         <td>
                        
                         @for ($i =0; $i < count($aportantes) ; $i++)
-                            <button class='btn btn-default' type='button' value='print' onclick='print({{$dato->id}},{{$dato->prorrogaid}},{{ $i }})'>
+                            <button class='btn btn-default' type='button' value='print' onclick='print({{$dato->id}},{{$dato->prorrogaid}},{{ $i }},{{ $datos[0]->tipo_documento_afiliado}},{{ $datos[0]->num_documento_afiliado }})'>
                             {{ $i+1 }}
                                 <i class='fa fa-print'> </i>
                             </button>
@@ -74,8 +74,8 @@
     </div>    
 </div>
 <script> 
-function print(id,pr,a){
-    var url = '../../certificadoIncapacidad/' + id +"/" + pr + "/"+a;
+function print(id,pr,a,tipoDoc,IDTrabajador){
+    var url = '../../certificadoIncapacidad/' + id +"/" + pr + "/"+a+"/"+tipoDoc+"/"+IDTrabajador;
     window.open(url,'_blank');
 }
 </script>
