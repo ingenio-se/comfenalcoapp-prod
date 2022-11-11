@@ -314,7 +314,7 @@ class IncapacidadFront extends Component {
        // console.log(validaciones);
        
         //this.getNumeroIncapacidad();
-        let url = 'validacionDerechos/' + tipoDocumento + "/" + numeroIdentificacion;
+        let url = 'validacionDerechos2022/' + tipoDocumento + "/" + numeroIdentificacion;
         await axios
             .get(url, {
                 tipoDocumento: tipoDocumento,
@@ -322,7 +322,7 @@ class IncapacidadFront extends Component {
                 })
             .then(response => {
                 // console
-                //console.log(response);
+                console.log(response);
 
                 let mensaje = response.data.responseMessageOut.body.response.validadorResponse.Derechos['MENSAJE'];
                 let derecho = response.data.responseMessageOut.body.response.validadorResponse.Derechos['DerechoPrestacion']

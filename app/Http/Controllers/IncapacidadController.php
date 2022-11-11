@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Descripcionesp;
 use App\Clasesa;
 use App\Estadosa;
+use Illuminate\Support\Facades\Http;
 class IncapacidadController extends Controller
 {
     //
@@ -138,5 +139,65 @@ class IncapacidadController extends Controller
         
         
        
+    }
+    public function validacion2022($tipo,$numero){
+        $tipoDocumento = $tipo;
+        $numeroIdentificacion = $numero;
+        
+        if ($numeroIdentificacion == "" || $tipoDocumento == "") {
+            echo json_encode('error');
+        }
+        else{
+                $hoy = date("Y-m-d H:i:s"); 
+                $host="https://webservice.epscomfenalcovalle.boxalud.com/api/Servicios/ValidacionDerechos";
+                //$host = "https://virtual.comfenalcovalle.com.co/esbtest/V2RESTJSONChannelAdapter";
+                $username = "SUCURSALVIRTUALEPS";
+                $password = "e95SucV7rtual";
+        
+                $headers = array(
+                    'Accept: */*',
+                    'Content-Type:application/json',
+                    'Authorization: Basic '. base64_encode("$username:$password")
+                );
+                $payload = '{
+                    "requestMessageOut": {
+                    "header": { "invokerDateTime":"2022-10-0610:03:00",
+                    "moduleId": "PRUEBAS",
+                    "systemId": "PRUEBAS",
+                    "messageId": "PRUEBAS|CONSULTA|CE340590", "logginData": {
+                    "sourceSystemId": "",
+                    "destinationSystemId": "" },
+                    "destination": { "namespace":
+                    "http://co/com/comfenalcovalle/esb/ws/ValidadorServiciosEps",
+                    "name": "ValidadorServiciosEps",
+                    "operation": "execute" },
+                    "securityCredential": { "userName": "", "userToken": ""
+                    }, "classification": {
+                    "classification": "" }
+                    }, "body": {
+                    "request": { "validadorRequest": {
+                    "abreviatura": "'.$tipoDocumento.'",
+                    "identificacion": "'.$numeroIdentificacion.'" }
+                    } }
+                    } }';
+                //dd($payload);
+                header("Content-Type:application/json");
+                $process = curl_init($host);
+                curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($process, CURLOPT_HEADER, 0);
+                curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
+                curl_setopt($process, CURLOPT_TIMEOUT, 30);
+                curl_setopt($process, CURLOPT_POST, 1);
+                curl_setopt($process, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt($process, CURLOPT_ENCODING, "UTF-8" );
+                curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
+                $return = curl_exec($process);
+                
+                curl_close($process);
+            
+                //finally print your API response
+                echo utf8_encode($return);
+        }
+        
     }
 }

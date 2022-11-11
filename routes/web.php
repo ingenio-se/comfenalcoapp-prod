@@ -28,6 +28,7 @@ Route::get('/incapacidad','IncapacidadController@inicio')->name('incapacidad')->
 Route::get('/licencia','LicenciaController@inicio')->name('licencia')->middleware('auth','twofactor');
 
 Route::get('/validacionDerechos/{tipo}/{numero}','IncapacidadController@validacion');
+Route::get('/validacionDerechos2022/{tipo}/{numero}','IncapacidadController@validacion2022');
 Route::get('/validacionDescripcion/{estado}/{clasea}/{programa}','IncapacidadController@validacionD');
 //Auth::routes();
 
@@ -151,3 +152,6 @@ Route::group(['prefix' => 'usuario','middleware'=>['auth','twofactor']], functio
 Route::get('editar/password', function() {
     return view('auth.editPassword');
 })->name('edit.password')->middleware('auth','twofactor');
+
+//test
+
