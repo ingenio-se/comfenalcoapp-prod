@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import Mensaje from './Mensaje';
 import Comboips from './Comboips.js';
 import Combocausae from './Combocausae.js';
+import Combogrupos from './Combogrupos.js';
+import Combomodop from './Combomodop.js';
+import Comboincapacidadr from './Comboincapacidadr.js';
 import Medico from './Medico.js';
 import AutocompleteDescripcion from './AutocompleteDescripcion.js';
 //import ValidacionDerechos from './ValidacionDerechos.js';
@@ -47,9 +50,14 @@ class IncapacidadFront extends Component {
             diasSolicitados : 0,
             diasMaximosCie10:0,
             diasMaximosEspecialidad:0,
+            diasMaximosRetroactivo:0,
+            diasMaximosProspectivo:0,
             fechaFinIncapacidad : today,
             diasReconocidos : 0,
             causae : '0',
+            grupos : '0',
+            modop : '0',
+            incar : '0',
             contingencia : '0',
             tipoDocAportante:'',
             numDocAportante: '',
@@ -122,6 +130,9 @@ class IncapacidadFront extends Component {
         this.handleDiasSolicitados = this.handleDiasSolicitados.bind(this);
         this.getBusinessDatesCount = this.getBusinessDatesCount.bind(this);
         this.handleCausa = this.handleCausa.bind(this);
+        this.handleGrupos = this.handleGrupos.bind(this);
+        this.handleModop = this.handleModop.bind(this);
+        this.handleIncar = this.handleIncar.bind(this);
         this.handleContingencia = this.handleContingencia.bind(this);
         this.guardarIncapacidad = this.guardarIncapacidad.bind(this);
         this.handleObservacion = this.handleObservacion.bind(this);
@@ -153,6 +164,9 @@ class IncapacidadFront extends Component {
         this.reviewProrroga = this.reviewProrroga.bind(this);
 
         this.handleMaxDias =this.handleMaxDias.bind(this);
+        this.handleMaxDiasR =this.handleMaxDiasR.bind(this);
+        this.handleMaxDiasP =this.handleMaxDiasP.bind(this);
+
 
       
         this.activarGeneracion=this.activarGeneracion.bind(this);
@@ -450,8 +464,7 @@ class IncapacidadFront extends Component {
             })
             .catch(err => {
                 console.log(err)
-            })
-        
+            }) 
     }
     handleTipo(e) {
         this.setState({
@@ -461,6 +474,16 @@ class IncapacidadFront extends Component {
     handleMaxDias(dato) {
         this.setState({
             diasMaximosEspecialidad: dato
+        });
+    }
+    handleMaxDiasR(dato) {
+        this.setState({
+            diasMaximosRetroactivo: dato
+        });
+    }
+    handleMaxDiasP(dato) {
+        this.setState({
+            diasMaximosProspectivo: dato
         });
     }
     handleFechaAtencion(e) {
@@ -639,8 +662,8 @@ class IncapacidadFront extends Component {
             let l1 = new Date(this.state.fechaAtencion);
             let l2 = new Date(this.state.fechaAtencion);
         
-            l1 = new Date(l1.setTime( l1.getTime() + 3 * 86400000 )).getTime()
-            l2 = new Date(l2.setTime( l2.getTime() - 3 * 86400000 )).getTime()
+            l1 = new Date(l1.setTime( l1.getTime() + this.state.diasMaximosProspectivo * 86400000 )).getTime()
+            l2 = new Date(l2.setTime( l2.getTime() - this.state.diasMaximosRetroactivo * 86400000 )).getTime()
 
             this.setState({
                 fechaInicioIncapacidad:new Date(e.target.value).toISOString().slice(0,10),
@@ -650,14 +673,14 @@ class IncapacidadFront extends Component {
             if (this.state.diasMaximosEspecialidad>0){
                 if (fi>l1){
                    // alert("La fecha de inicio no puede ser mayor a 3 días desde la fecha de atención")
-                    this.handleToast("La fecha de inicio no puede ser mayor a 3 días desde la fecha de atención",'warning');
+                    this.handleToast("La fecha de inicio no puede ser mayor a " + this.state.diasMaximosProspectivo + " días desde la fecha de atención",'warning');
                     this.setState({
                         fechaInicioIncapacidad:new Date().toISOString().slice(0,10)
                     });
                 }
                 if (fi<l2){
                     // alert("La fecha de inicio no puede ser menor a 3 días desde la fecha de atención")
-                    this.handleToast("La fecha de inicio no puede ser mayor a 3 días desde la fecha de atención",'warning');
+                    this.handleToast("La fecha de inicio no puede ser menor a " + this.state.diasMaximosRetroactivo + " días desde la fecha de atención",'warning');
                     this.setState({
                         fechaInicioIncapacidad:new Date().toISOString().slice(0,10),
                     });
@@ -665,9 +688,15 @@ class IncapacidadFront extends Component {
             }
     }
     handleDiasSolicitados(e){
-        this.setState({
-            diasSolicitados: e.target.value,
-        })
+        let dias = e.target.value;
+        if (dias > this.state.diasMaximosEspecialidad){
+            this.handleToast("La cantidad máxima de días posibles es " + this.state.diasMaximosEspecialidad,'warning');
+        }
+        else{
+            this.setState({
+                diasSolicitados: e.target.value,
+            })
+        }
         //console.log(this.state.diasSolicitados);
         //console.log(this.state.diasMaximosCie10);
        
@@ -727,6 +756,21 @@ class IncapacidadFront extends Component {
                 contingencia : 1,
             });
         }
+    }
+    handleGrupos(e){
+        this.setState({
+            grupos : e,
+        });
+    }
+    handleModop(e){
+        this.setState({
+            modop : e,
+        });
+    }
+    handleIncar(e){
+        this.setState({
+            incar : e,
+        });
     }
     handleObservacion(e){
         this.setState({
@@ -920,6 +964,16 @@ class IncapacidadFront extends Component {
         if (this.state.causae == 0){
             newState.errors.causae = "visible";
             newState.errorMensajes.causae = "Causa externa requerida";
+            resp=false;   
+        }
+        if (this.state.grupos == 0){
+            newState.errors.grupos = "visible";
+            newState.errorMensajes.grupos = "Grupo de servicio requerido";
+            resp=false;   
+        }
+        if (this.state.modop == 0){
+            newState.errors.modop = "visible";
+            newState.errorMensajes.modop = "Modo prestación requerido";
             resp=false;   
         }
         if (this.state.lateralidad_id == 0){
@@ -1230,7 +1284,7 @@ class IncapacidadFront extends Component {
                         <div className="card-body texto">
         
                                 <Comboips handleIpsChange={this.handleIpsChange} handlePrestador={this.handlePrestador} valor={this.state.ips_id} error={this.state.errors['tipoPrestador']} mensaje={this.state.errorMensajes['tipoPrestador']} errorIps={this.state.errors['ips']} mensajeIps={this.state.errorMensajes['ips']}/>
-                                <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias}/> 
+                                <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias} handleMaxDiasR={this.handleMaxDiasR} handleMaxDiasP={this.handleMaxDiasP}/> 
                         </div>
                     </div>
                 </div>
@@ -1414,6 +1468,17 @@ class IncapacidadFront extends Component {
                                         </div>
                                     </div>
                                 </div>  
+                                <div className="row">
+                                    <div className="col-sm-4">
+                                        <Combogrupos handleGrupos = {this.handleGrupos} value= { this.state.grupos} error={this.state.errors['grupos']} mensaje={this.state.errorMensajes['grupos']}/> 
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <Combomodop handleModop = {this.handleModop} value={ this.state.modop} error={this.state.errors['modop']} mensaje={this.state.errorMensajes['modop']}/> 
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <Comboincapacidadr handleIncar = {this.handleIncar} value={ this.state.incar} error={this.state.errors['incar']} mensaje={this.state.errorMensajes['incar']}/> 
+                                    </div>
+                                </div>
                                 <div className="row">
                                     <div className="col-sm-12">
                                         <div className="form-group">

@@ -16,6 +16,9 @@ use App\Estadosi;
 use App\Estadosa;
 use App\Diasmax;
 use App\Cronicos;
+use App\Grupos;
+use App\Modop;
+use App\Incapcidadr;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Http\Controllers\IncapacidadController;
@@ -54,6 +57,15 @@ class ApiController extends Controller
         if ($tipo== "estados"){ 
             $data=$this->loadEstadosDB(); 
         }
+        if ($tipo== "grupos"){ 
+            $data=$this->loadGruposDB(); 
+        }
+        if ($tipo== "modop"){ 
+            $data=$this->loadModopDB(); 
+        }
+        if ($tipo== "incar"){ 
+            $data=$this->loadIncarDB(); 
+        }
         return response()->json([
             'data' => $data
         ]);
@@ -73,6 +85,18 @@ class ApiController extends Controller
     private function loadCausasDB(){
         $causas=Causae::all();
         return $causas;
+    }
+    private function loadGruposDB(){
+        $grupos=Grupos::where('estado',1)->get();
+        return $grupos;
+    }
+    private function loadModopDB(){
+        $modop=Modop::where('estado',1)->get();
+        return $modop;
+    }
+    private function loadIncarDB(){
+        $incar=Incapcidadr::where('estado',1)->get();
+        return $incar;
     }
     private function loadTcDB(){
         $tc=Descripcionesp::where('incapacidad',1)->orderBy('descripcion','asc')->get();
@@ -99,9 +123,12 @@ class ApiController extends Controller
     public function datosMedico(){
         $id = Auth::user()->id;
         $medico = Medico::where('user_id',$id)->get();
-       // dd($medico);
+        //dd($medico);
+        $dias = Diasmax::where('id',$medico[0]->especialidad)->get();
+        
        return response()->json([
-        'data' => $medico
+        'data' => $medico,
+        'dias' =>$dias
         ]);
 
     }
@@ -627,11 +654,15 @@ class ApiController extends Controller
             $prestador = $ips->nombre_sede;
             $nitprestador = $ips->nit;
             $direccionprestador = $ips->direccion;
+            $lugar = $ips->cod_municipio. " - ".$ips->municipio." - ".$ips->departamento; 
+            $codigo_habilitacion=$ips->cod_habilitacion;
         }
         if ($d->tipo_prestador== 2){
            $prestador="Consultorio";
            $nitprestador = Medico::where('id',$d->medico_id)->first()->num_documento;
            $direccionprestador ="";
+           $lugar="";
+           $codigo_habilitacion="";
         }
         $contingencias=["","Enfermedad general","Enfermedad laboral","Accidente de trabajo"];
        
@@ -692,6 +723,13 @@ class ApiController extends Controller
         $i->put('Especialidad',$especialidades[$especialidad]); 
         $i->put('Registro Médico',$registroMedico); 
         $i->put('Observacion EPS',''); 
+
+        //nuevos campos 2022
+        $i->put('Lugar de expedición',$lugar);
+        $i->put('codigo habilitacion',$codigo_habilitacion);
+        $i->put('Grupo de servicio','01-Consulta externa');
+        $i->put('modo prestacion','01-Intramural');
+        $i->put('incapacidad retroactiva','01-Urgencia xxxx');
 
         $pdf = PDF::loadView('incapacidades.certificado',[
             'i' => $i

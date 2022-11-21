@@ -8,16 +8,27 @@ export default function Medico(props) {
     const [registro, setRegistro] = useState();
     const [especialidad, setEspecialidad] = useState();
     const [maxDias,setMaxDias]=useState();
+    const [maxDiasR,setMaxDiasR]=useState();
+    const [maxDiasP,setMaxDiasP]=useState();
 
     const getMedico = () => {
         let url = 'datosMedico'
         Axios.get(url)
             .then(resp => {
+                //console.log(resp.data);
                 setTipo(resp.data.data[0]['tipo_documento'])
                 setNumero(resp.data.data[0]['num_documento'])
                 setNombre(resp.data.data[0]['nombre'])
                 setRegistro(resp.data.data[0]['reg_medico'])
                 setEspecialidad(resp.data.data[0]['especialidad'])
+                setMaxDias(resp.data.dias[0]['dias_maximos'])
+                setMaxDiasR(resp.data.dias[0]['dias_maximos_retroactivo'])
+                setMaxDiasP(resp.data.dias[0]['dias_maximos_prospectivo'])
+                props.handleMaxDias(resp.data.dias[0]['dias_maximos']);
+                props.handleMaxDiasR(resp.data.dias[0]['dias_maximos_retroactivo']);
+                props.handleMaxDiasP(resp.data.dias[0]['dias_maximos_prospectivo']);
+
+                /*
                 if ((resp.data.data[0]['especialidad']==1)||(resp.data.data[0]['especialidad']==3)){
                     setMaxDias(30);
                     props.handleMaxDias(30);
@@ -29,7 +40,7 @@ export default function Medico(props) {
                 if (resp.data.data[0]['especialidad']==5){
                     setMaxDias(0);
                     props.handleMaxDias(0);
-                }
+                }*/
                 props.handleMedico(resp.data.data[0]['id'])
             })
             .catch(err => {
