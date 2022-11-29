@@ -327,6 +327,8 @@ class ApiController extends Controller
             'observacion_estado' => $datos['observacion_estado'],
             'validacion' => $datos['validacion'],
             'aportantes' => $datos['aportantes'],
+            'fecha_probable_parto' => $datos['fechaProbableParto'],
+            'certificados' => $datos['certificados']
         ]);
             
         return  "Licencia almacenada";
@@ -834,6 +836,8 @@ class ApiController extends Controller
             $prestador = $ips->nombre_sede;
             $nitprestador = $ips->nit;
             $direccionprestador = $ips->direccion;
+            $lugar = $ips->cod_municipio. " - ".$ips->municipio." - ".$ips->departamento; 
+            $codigo_habilitacion=$ips->cod_habilitacion;
         }
         if ($d->tipo_prestador== 2){
            $prestador="Consultorio";
@@ -869,8 +873,8 @@ class ApiController extends Controller
 
         $i->put('Tipo de certificado','Licencia de maternidad');
         $i->put('Tipo de licencia',$d->tipo_licencia);
-        $i->put('Fecha de inicio de la licencia',$d->fecha_inicio_licencia);
-        $i->put('Fecha fin de la licencia',$d->fecha_fin_licencia);
+        $i->put('Fecha de inicio de la licencia',substr($d->fecha_inicio_licencia, 0, 11));
+        $i->put('Fecha fin de la licencia',substr($d->fecha_fin_licencia, 0, 11));
 
         $i->put('Días solicitados en letra',$formatter->toWords($d->dias_solicitados, 0));
         $i->put('Días solicitados',$d->dias_solicitados);
@@ -893,6 +897,19 @@ class ApiController extends Controller
        
         $i->put('Registro Médico',$registroMedico); 
         $i->put('Observacion EPS',''); 
+        $em="No";
+        if ($d->recien_nacido_viable >1){
+            $em="Si";
+        }
+
+        //nuevos campos 2022
+        $i->put('Lugar de expedición',$lugar);
+        $i->put('codigo habilitacion',$codigo_habilitacion);
+        $i->put('Fecha Probable de Parto','2022-11-29');
+        $i->put('Edad Gestacional',$d->edad_gestacional_semanas);
+        $i->put('Embarazo Multiple',$em);
+        $i->put('Certificados',$d->certificados);
+
 
         $pdf = PDF::loadView('incapacidades.certificadoLicencia',[
             'i' => $i

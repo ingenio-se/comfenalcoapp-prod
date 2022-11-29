@@ -58,8 +58,9 @@ class LicenciaFront extends Component {
             nacidoViable:0,
             nacidoViableState:true,
             fechaProbableState:'oculto',
+            fechaProbableParto:'',
             partoMultiple:'',
-
+            certificados:'',
 
             tipoLicencia:'0',
             
@@ -151,6 +152,8 @@ class LicenciaFront extends Component {
         this.renderAportantes=this.renderAportantes.bind(this);
         this.generarCertificado=this.generarCertificado.bind(this);
         this.handleToast = this.handleToast.bind(this);
+        this.handlefechaProbable = this.handlefechaProbable.bind(this);
+       
 
         /*
         this.handlePrestador = this.handlePrestador.bind(this);
@@ -626,7 +629,13 @@ class LicenciaFront extends Component {
         });
         
     }
-    
+    handlefechaProbable(e) {
+        this.setState({
+            fechaProbableParto: new Date(e.target.value).toISOString().slice(0, 10),
+        });
+    }
+   
+
     //diagnosticos 
     handleDiagnostico(dato) {
         this.setState({ diagnostico: dato })
@@ -937,6 +946,31 @@ class LicenciaFront extends Component {
             newState.errors.tipoLicencia = "visible";
             newState.errorMensajes.tipoLicencia = "Tipo de licencia requerida";
             resp = false;
+        }
+        if (this.state.fechaProbableParto == '') {
+            newState.errors.fechaProbable = "visible";
+            newState.errorMensajes.fechaProbable = "Fecha probable de parto requerida";
+            resp = false;
+        }
+
+        if (parseInt(this.state.nacidoViable)>0){
+            let numcertificados = 0;
+            let acert = this.state.certificados.split(",");
+            numcertificados = acert.length;
+            //console.log(this.state.certificados);
+            if (this.state.certificados ==''){
+                numcertificados=0
+            }
+            
+            //console.log(acert);
+            //console.log(numcertificados);
+          
+            if (numcertificados < parseInt(this.state.nacidoViable)){
+                newState.errors.certificados = "visible";
+                newState.errorMensajes.certificados = "Se requieren los certificados completos";
+                resp = false;
+            }
+            
         }
         this.setState(newState);
 
@@ -1329,6 +1363,15 @@ class LicenciaFront extends Component {
                                         </div>
                                     </div>
                                     <div className="row">
+                                        <div className="col-sm-12">
+                                            <label htmlFor="certificados">Certificados Nacido vivo (ingrese un certificado por cada nacido vivo separado por coma)</label>
+                                            <input type="text" className="form-control"  name="certificados" value={ this.state.certificados} onChange={this.handleChange} />
+                                              <div className={this.state.errors['certificados']}>
+                                                <div className={"redf  " + (this.state.errors['certificados'] || "")}>{this.state.errorMensajes['certificados']}</div>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                    <div className="row">
                                         <div className="col-sm-6">
                                             <label htmlFor="tipoLicencia">Tipo licencia</label>
                                             <select name="tipoLicencia" className="form-control texto" onChange={this.handleChange} value={this.state.tipoLicencia}>
@@ -1352,7 +1395,7 @@ class LicenciaFront extends Component {
                                         </div>
                                         <div className="col-sm-6">
                                            
-                                                <div className={this.state.fechaProbableState}>
+                                               {/*  <div className={this.state.fechaProbableState}>*/}
                                                     
                                                         <div className="form-group">
                                                             <label htmlFor="fechaProbable">Fecha probable de parto</label>
@@ -1373,7 +1416,7 @@ class LicenciaFront extends Component {
                                                             <div className={"redf  " + (this.state.errors['soporte'] || "")}>{this.state.errorMensajes['soporte']}</div>
                                                         </div>
                                                    
-                                                </div>
+                                                {/* </div>*/}
                                             
                                         </div>
                                     </div>

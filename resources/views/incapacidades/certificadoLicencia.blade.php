@@ -30,6 +30,9 @@ tr td{
   padding: 1 !important;
   margin: 0 !important;
 }
+@page {
+  margin: 10;
+}
 </style>   
 </head>
 <body class="bg-white font-eleven">
@@ -41,20 +44,35 @@ tr td{
             <td ><img  src="img/comfenalcovalle.png" width="50" height="17"></td>
             <td class="font-weight-bold">{{ $i["titulo"] }}</td>
             <td class="font-weight-bold">Licencia No.</td><td>{{ $i["No"] }}</td>
-            <td class="font-weight-bold">Fecha consulta</td><td>{{ $i["Fecha de consulta médica"] }}</td>
+            <td style="padding:0">
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="font-weight-bold">Fecha consulta</td>
+                        <td>{{ $i["Fecha de consulta médica"] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">Lugar de expedición</td>
+                        <td>{{ $i["Lugar de expedición"] }}</td>
+                    </tr>
+                </table>
+                
+            </td>
+            <td>
+
+            </td>
             
             </tr>
         </table>
     </div>
 
 </div>
-<br><br>
+<br><br><br>
 <div class="row">
     <div class="col-sm-12  mx-auto">
     <table class="table table-bordered table-sm">
             <tr><td class="font-weight-bold">Paciente</td>
             
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del paciente"] }}</td>
+            <td>{{ $i["Nombre del paciente"] }}</td>
             <td class="font-weight-bold">Identificación</td><td>{{ $i["Tipo de identificacion del paciente"]." ".$i["Numero de documento del paciente"] }}</td>
             </tr>
             <tr>
@@ -65,22 +83,29 @@ tr td{
     </table>
     <table class="table table-bordered table-sm ">
             <tr><td class="font-weight-bold">Prestador</td>
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del prestador"] }}</td>
+            <td>{{ $i["Nombre del prestador"] }}</td>
             <td class="font-weight-bold">Nit</td><td>{{ $i["Nit del prestador"]}}</td>
+            <td class="font-weight-bold">Código Habilitación</td><td>{{ $i["codigo habilitacion"] }}</td> 
             </tr>
             <tr>
                 <td class="font-weight-bold">Dirección</td><td>{{ $i["Dirección del prestador"] }}</td>
-                <td class="font-weight-bold">Ciudad</td><td>{{ $i["Ciudad"] }}</td>
+                
                 <td class="font-weight-bold">EPS</td><td>{{ $i["NombreEPS"] }}</td>
                 <td class="font-weight-bold">Aportante</td><td>{{ $i["Nombre aportante"] }}</td>
             </tr>       
     </table>
     <table class="table table-bordered table-sm">
             <tr><td class="font-weight-bold">Licencia</td>
-            <td class="font-weight-bold">Tipo de certificado</td><td>{{ $i["Tipo de certificado"] }}</td>
-            <td class="font-weight-bold">Tipo de licencia</td><td>{{ $i["Tipo de licencia"] }}</td>
+           <!-- <td class="font-weight-bold">Tipo de certificado</td><td>{{ $i["Tipo de certificado"] }}</td>
+            <td class="font-weight-bold">Tipo de licencia</td><td>{{ $i["Tipo de licencia"] }}</td>-->
                 <td class="font-weight-bold">Fecha Inicio</td><td>{{ $i["Fecha de inicio de la licencia"] }}</td>
                 <td class="font-weight-bold">Fecha Fin</td><td>{{ $i["Fecha fin de la licencia"] }}</td>
+                <td class="font-weight-bold">Fecha Probable de Parto</td><td>{{ $i["Fecha Probable de Parto"] }}</td>
+                <td class="font-weight-bold">Edad Gestacional (semanas)</td><td>{{ $i["Edad Gestacional"] }}</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold">Embarazo Múltiple </td><td>{{ $i["Embarazo Multiple"] }}</td>
+                <td class="font-weight-bold">Certificado(s)</td><td class="">{{ $i["Certificados"] }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Días </td><td>{{ $i["Días solicitados"] }}</td>
@@ -97,7 +122,7 @@ tr td{
     <table class="table table-bordered table-sm">
         <tr><td class="font-weight-bold">Profesional</td>
         
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del profesional que genera"] }}</td>
+            <td>{{ $i["Nombre del profesional que genera"] }}</td>
             <td class="font-weight-bold">Identificación</td><td>{{ $i["Tipo doc profesional que genera"]." ".$i["Numero doc profesional que genera"] }}</td>
             <td class="font-weight-bold">Reg. Médico</td><td>{{ $i["Registro Médico"] }}</td> 
             <td class="font-weight-bold">Especialidad</td><td>{{ $i["Especialidad"] }}</td> 
@@ -105,7 +130,7 @@ tr td{
     </table>
 
     <table class="table table-bordered table-sm">
-    <tr><td>Este certificado no implica el reconocimiento de la certificación ni de la prestación económica. El trámite ante la EPS debe ser realizado por el aportante (empresa, trabajador independiente). La pertinencia médica y  validación de los conceptos en días, prórroga, coberturas, origen  se verá reflejada posterior a la radicación auditoria, liquidación por parte de la EPS,  según se cumpla con requisitos y condiciones de aseguramiento definidos por el Sistema General de Seguridad social</td></tr>
+    <tr><td style="font-size: 10px">Este certificado no implica el reconocimiento de la certificación ni de la prestación económica. El trámite ante la EPS debe ser realizado por el aportante (empresa, trabajador independiente). La pertinencia médica y  validación de los conceptos en días, prórroga, coberturas, origen  se verá reflejada posterior a la radicación auditoria, liquidación por parte de la EPS,  según se cumpla con requisitos y condiciones de aseguramiento definidos por el Sistema General de Seguridad social</td></tr>
     </table>
 
     <table class="table table-bordered table-sm">
@@ -125,7 +150,7 @@ tr td{
 
 
 <!--COPIA-->
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <div class="row">
     <div class="col-sm-12  mx-auto">
         <table class="table table-bordered">
@@ -133,20 +158,35 @@ tr td{
             <td ><img  src="img/comfenalcovalle.png" width="50" height="17"></td>
             <td class="font-weight-bold">{{ $i["titulo"] }}</td>
             <td class="font-weight-bold">Licencia No.</td><td>{{ $i["No"] }}</td>
-            <td class="font-weight-bold">Fecha consulta</td><td>{{ $i["Fecha de consulta médica"] }}</td>
+            <td style="padding:0">
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="font-weight-bold">Fecha consulta</td>
+                        <td>{{ $i["Fecha de consulta médica"] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">Lugar de expedición</td>
+                        <td>{{ $i["Lugar de expedición"] }}</td>
+                    </tr>
+                </table>
+                
+            </td>
+            <td>
+
+            </td>
             
             </tr>
         </table>
     </div>
 
 </div>
-<br><br>
+<br><br><br>
 <div class="row">
     <div class="col-sm-12  mx-auto">
     <table class="table table-bordered table-sm">
             <tr><td class="font-weight-bold">Paciente</td>
             
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del paciente"] }}</td>
+            <td>{{ $i["Nombre del paciente"] }}</td>
             <td class="font-weight-bold">Identificación</td><td>{{ $i["Tipo de identificacion del paciente"]." ".$i["Numero de documento del paciente"] }}</td>
             </tr>
             <tr>
@@ -157,22 +197,29 @@ tr td{
     </table>
     <table class="table table-bordered table-sm ">
             <tr><td class="font-weight-bold">Prestador</td>
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del prestador"] }}</td>
+            <td>{{ $i["Nombre del prestador"] }}</td>
             <td class="font-weight-bold">Nit</td><td>{{ $i["Nit del prestador"]}}</td>
+            <td class="font-weight-bold">Código Habilitación</td><td>{{ $i["codigo habilitacion"] }}</td> 
             </tr>
             <tr>
                 <td class="font-weight-bold">Dirección</td><td>{{ $i["Dirección del prestador"] }}</td>
-                <td class="font-weight-bold">Ciudad</td><td>{{ $i["Ciudad"] }}</td>
+                
                 <td class="font-weight-bold">EPS</td><td>{{ $i["NombreEPS"] }}</td>
                 <td class="font-weight-bold">Aportante</td><td>{{ $i["Nombre aportante"] }}</td>
             </tr>       
     </table>
     <table class="table table-bordered table-sm">
             <tr><td class="font-weight-bold">Licencia</td>
-            <td class="font-weight-bold">Tipo de certificado</td><td>{{ $i["Tipo de certificado"] }}</td>
-            <td class="font-weight-bold">Tipo de licencia</td><td>{{ $i["Tipo de licencia"] }}</td>
+           <!-- <td class="font-weight-bold">Tipo de certificado</td><td>{{ $i["Tipo de certificado"] }}</td>
+            <td class="font-weight-bold">Tipo de licencia</td><td>{{ $i["Tipo de licencia"] }}</td>-->
                 <td class="font-weight-bold">Fecha Inicio</td><td>{{ $i["Fecha de inicio de la licencia"] }}</td>
                 <td class="font-weight-bold">Fecha Fin</td><td>{{ $i["Fecha fin de la licencia"] }}</td>
+                <td class="font-weight-bold">Fecha Probable de Parto</td><td>{{ $i["Fecha Probable de Parto"] }}</td>
+                <td class="font-weight-bold">Edad Gestacional (semanas)</td><td>{{ $i["Edad Gestacional"] }}</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold">Embarazo Múltiple </td><td>{{ $i["Embarazo Multiple"] }}</td>
+                <td class="font-weight-bold">Certificado(s)</td><td class="">{{ $i["Certificados"] }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Días </td><td>{{ $i["Días solicitados"] }}</td>
@@ -189,7 +236,7 @@ tr td{
     <table class="table table-bordered table-sm">
         <tr><td class="font-weight-bold">Profesional</td>
         
-            <td class="font-weight-bold">Nombre</td><td>{{ $i["Nombre del profesional que genera"] }}</td>
+            <td>{{ $i["Nombre del profesional que genera"] }}</td>
             <td class="font-weight-bold">Identificación</td><td>{{ $i["Tipo doc profesional que genera"]." ".$i["Numero doc profesional que genera"] }}</td>
             <td class="font-weight-bold">Reg. Médico</td><td>{{ $i["Registro Médico"] }}</td> 
             <td class="font-weight-bold">Especialidad</td><td>{{ $i["Especialidad"] }}</td> 
@@ -197,7 +244,7 @@ tr td{
     </table>
 
     <table class="table table-bordered table-sm">
-    <tr><td>Este certificado no implica el reconocimiento de la certificación ni de la prestación económica. El trámite ante la EPS debe ser realizado por el aportante (empresa, trabajador independiente). La pertinencia médica y  validación de los conceptos en días, prórroga, coberturas, origen  se verá reflejada posterior a la radicación auditoria, liquidación por parte de la EPS,  según se cumpla con requisitos y condiciones de aseguramiento definidos por el Sistema General de Seguridad social</td></tr>
+    <tr><td style="font-size: 10px">Este certificado no implica el reconocimiento de la certificación ni de la prestación económica. El trámite ante la EPS debe ser realizado por el aportante (empresa, trabajador independiente). La pertinencia médica y  validación de los conceptos en días, prórroga, coberturas, origen  se verá reflejada posterior a la radicación auditoria, liquidación por parte de la EPS,  según se cumpla con requisitos y condiciones de aseguramiento definidos por el Sistema General de Seguridad social</td></tr>
     </table>
 
     <table class="table table-bordered table-sm">

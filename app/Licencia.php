@@ -46,7 +46,9 @@ class Licencia extends Model
         'estado_id',
         'observacion_estado',
         'aportantes',
-        'validacion'
+        'validacion',
+        'fecha_probable_parto',
+        'certificados'
     ];
     public function estado()
     {
