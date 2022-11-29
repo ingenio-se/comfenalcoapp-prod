@@ -115,7 +115,8 @@ class IncapacidadFront extends Component {
             },
             flagCertificado: 'disabled',
             aportantes:'',
-            edad:0
+            edad:0,
+            band_retroactiva : false
             
         };
         this.initialState = { ...this.state } 
@@ -661,6 +662,12 @@ class IncapacidadFront extends Component {
 
             let l1 = new Date(this.state.fechaAtencion);
             let l2 = new Date(this.state.fechaAtencion);
+
+            if (fi < l2.getTime()){
+                this.setState({
+                    band_retroactiva : true
+                });
+            }
         
             l1 = new Date(l1.setTime( l1.getTime() + this.state.diasMaximosProspectivo * 86400000 )).getTime()
             l2 = new Date(l2.setTime( l2.getTime() - this.state.diasMaximosRetroactivo * 86400000 )).getTime()
@@ -675,7 +682,8 @@ class IncapacidadFront extends Component {
                    // alert("La fecha de inicio no puede ser mayor a 3 días desde la fecha de atención")
                     this.handleToast("La fecha de inicio no puede ser mayor a " + this.state.diasMaximosProspectivo + " días desde la fecha de atención",'warning');
                     this.setState({
-                        fechaInicioIncapacidad:new Date().toISOString().slice(0,10)
+                        fechaInicioIncapacidad:new Date().toISOString().slice(0,10),
+                        band_retroactiva : false
                     });
                 }
                 if (fi<l2){
@@ -683,6 +691,7 @@ class IncapacidadFront extends Component {
                     this.handleToast("La fecha de inicio no puede ser menor a " + this.state.diasMaximosRetroactivo + " días desde la fecha de atención",'warning');
                     this.setState({
                         fechaInicioIncapacidad:new Date().toISOString().slice(0,10),
+                        band_retroactiva : false
                     });
                 }
             }
@@ -974,6 +983,11 @@ class IncapacidadFront extends Component {
         if (this.state.modop == 0){
             newState.errors.modop = "visible";
             newState.errorMensajes.modop = "Modo prestación requerido";
+            resp=false;   
+        }
+        if (this.state.incar == 0 && this.state.band_retroactiva == true){
+            newState.errors.incar = "visible";
+            newState.errorMensajes.incar = "Incapacidad retroactiva requerido";
             resp=false;   
         }
         if (this.state.lateralidad_id == 0){

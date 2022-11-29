@@ -42,7 +42,10 @@ class Incapacidad extends Model
             'tipo_cotizante',
             'programa_afiliado',
             'aportantes',
-            'validacion'
+            'validacion',
+            'grupo_servicio',
+            'modo_prestacion',
+            'incapacidad_retroactiva'
           
     ];
     public function estado()

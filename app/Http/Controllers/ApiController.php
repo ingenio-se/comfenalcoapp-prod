@@ -268,6 +268,11 @@ class ApiController extends Controller
 
                 'validacion' => $datos['validacion'],
                 'aportantes' => $datos['aportantes'],
+
+                'grupo_servicio' => $datos['grupos'],
+                'modo_prestacion' => $datos['modop'],
+                'incapacidad_retroactiva' => $datos['incar']
+
             ]);
                 
             return  "Incapacidad almacenada";
@@ -565,7 +570,7 @@ class ApiController extends Controller
     public function certificadoIncapacidad($id,$pid,$a,$tipodoc,$idtr){
         
        // dd( $formatter->toWords(126, 0));
-
+        
         if (!Incapacidad::where('id',$id)->where('prorrogaid',$pid)->where('tipo_documento_afiliado',$tipodoc)
         ->where('num_documento_afiliado',$idtr)->exists()){
             dd("La incapacidad no se encuentra almacenada");
@@ -575,7 +580,7 @@ class ApiController extends Controller
         $fechahora= Carbon::now();
         $d =Incapacidad::where('id',$id)->where('prorrogaid',$pid)->where('tipo_documento_afiliado',$tipodoc)
         ->where('num_documento_afiliado',$idtr)->first();
-        
+        //dd($d);
         $tipoDoc = $d->tipo_documento_afiliado;
         $numDoc = $d->num_documento_afiliado;
         $response =json_decode($d->validacion);
@@ -725,11 +730,22 @@ class ApiController extends Controller
         $i->put('Observacion EPS',''); 
 
         //nuevos campos 2022
+        $grupos=$modop=$incar="";
+        if ($d->grupo_servicio !== null){
+        $grupos =Grupos::where('id',$d->grupo_servicio)->first()->grupo_servicio;
+        }
+        if ($d->modo_prestacion !== null){
+        $modop =Modop::where('id',$d->modo_prestacion)->first()->modo_prestacion;
+        }
+        if ($d->incapacidad_retroactiva !== null){
+        $incar =Incapcidadr::where('id',$d->incapacidad_retroactiva)->first()->incapacidad_retroactiva;
+        }
+
         $i->put('Lugar de expedición',$lugar);
         $i->put('codigo habilitacion',$codigo_habilitacion);
-        $i->put('Grupo de servicio','01-Consulta externa');
-        $i->put('modo prestacion','01-Intramural');
-        $i->put('incapacidad retroactiva','01-Urgencia xxxx');
+        $i->put('Grupo de servicio',$grupos);
+        $i->put('modo prestacion',$modop);
+        $i->put('incapacidad retroactiva',$incar);
 
         $pdf = PDF::loadView('incapacidades.certificado',[
             'i' => $i
