@@ -41,6 +41,9 @@ export default function TableIps(props) {
                 <td>{ips[key]['telefono']}</td>
                 <td>{ips[key]['razon_social']}</td>
                 <td>{ips[key]['nit']}</td>
+                <td>{ips[key]['departamento']}</td>
+                <td>{ips[key]['municipio']}</td>
+                <td>{ips[key]['cod_municipio']}</td>
                 </tr>
             ))}
         </tbody>

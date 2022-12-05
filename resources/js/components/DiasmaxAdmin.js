@@ -172,6 +172,8 @@ class DiasmaxAdmin extends Component {
                                             <th scope="col"></th>
                                             <th scope="col">Especialidad</th>
                                             <th scope="col">Días máximos</th>
+                                            <th scope="col">Días máximos retroactivo</th>
+                                            <th scope="col">Días máximos prospectivo</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>

@@ -194,6 +194,9 @@ class IpsAdmin extends Component {
                                             <th scope="col">Teléfono</th>
                                             <th scope="col">Razón Social</th>
                                             <th scope="col">Nit</th>
+                                            <th scope="col">Departamento</th>
+                                            <th scope="col">Municipio</th>
+                                            <th scope="col">Cod Municipio</th>
                                         </tr>
                                     </thead>
                                     <TableIps ips={ips} handleEdition ={this.handleEdition} handleEliminar ={this.handleEliminar}/>
