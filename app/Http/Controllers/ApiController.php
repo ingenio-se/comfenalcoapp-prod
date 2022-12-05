@@ -705,8 +705,8 @@ class ApiController extends Controller
         $i->put('Numero historia clinica',$numDoc);
 
         $i->put('Tipo de certificado','Incapacidad temporal');
-        $i->put('Fecha de inicio de la incapacidad',$d->fecha_inicio_incapacidad);
-        $i->put('Fecha fin de la incapacidad',$d->fecha_fin_incapacidad);
+        $i->put('Fecha de inicio de la incapacidad',substr($d->fecha_inicio_incapacidad, 0, 11));
+        $i->put('Fecha fin de la incapacidad',substr($d->fecha_fin_incapacidad, 0, 11));
 
         $i->put('Días solicitados en letra',$formatter->toWords($d->dias_solicitados, 0));
         $i->put('Días solicitados',$d->dias_solicitados);
@@ -841,8 +841,14 @@ class ApiController extends Controller
         }
         if ($d->tipo_prestador== 2){
            $prestador="Consultorio";
-           $nitprestador = Medico::where('id',$d->medico_id)->first()->num_documento;
+           $nitprestador ="";
+           if (Medico::where('id',$d->medico_id)->exists()){
+                $nitprestador = Medico::where('id',$d->medico_id)->first()->num_documento;
+
+            }
            $direccionprestador ="";
+           $lugar="";
+           $codigo_habilitacion="";
         }
 
        

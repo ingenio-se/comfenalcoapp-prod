@@ -114,7 +114,7 @@ tr td{
     </table>
     <table class="table table-bordered table-sm">
         <tr><td class="font-weight-bold">Diagnostico principal</td><td>{{ $i["Diagnostico principal"] }}</td>     
-        <td class="font-weight-bold">Contingenica origen</td><td>{{ $i["Contingencia origen"] }}</td>
+        <td class="font-weight-bold">Contingencia origen</td><td>{{ $i["Contingencia origen"] }}</td>
         
         </tr>   
     </table>
@@ -228,7 +228,7 @@ tr td{
     </table>
     <table class="table table-bordered table-sm">
         <tr><td class="font-weight-bold">Diagnostico principal</td><td>{{ $i["Diagnostico principal"] }}</td>     
-        <td class="font-weight-bold">Contingenica origen</td><td>{{ $i["Contingencia origen"] }}</td>
+        <td class="font-weight-bold">Contingencia origen</td><td>{{ $i["Contingencia origen"] }}</td>
         
         </tr>   
     </table>

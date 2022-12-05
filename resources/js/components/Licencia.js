@@ -126,6 +126,9 @@ class LicenciaFront extends Component {
 
         this.handleMedico = this.handleMedico.bind(this);
         this.handleMaxDias = this.handleMaxDias.bind(this);
+      
+        this.handleMaxDiasR =this.handleMaxDiasR.bind(this);
+        this.handleMaxDiasP =this.handleMaxDiasP.bind(this);
         this.handlePrestador = this.handlePrestador.bind(this);
         this.handleIpsChange = this.handleIpsChange.bind(this);
         this.buscarHistorico = this.buscarHistorico.bind(this);
@@ -199,7 +202,7 @@ class LicenciaFront extends Component {
         const toastType = toastOptions[type]
         toast[toastType](arg, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 4000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -772,6 +775,17 @@ class LicenciaFront extends Component {
             diasMaximosEspecialidad: dato
         });
     }
+   
+    handleMaxDiasR(dato) {
+        this.setState({
+            diasMaximosRetroactivo: dato
+        });
+    }
+    handleMaxDiasP(dato) {
+        this.setState({
+            diasMaximosProspectivo: dato
+        });
+    }
     handleContingencia(e) {
         // console.log(e.target.value);
         this.setState({
@@ -1255,7 +1269,8 @@ class LicenciaFront extends Component {
                                 <div className="card-body texto">
 
                                     <Comboips handleIpsChange={this.handleIpsChange} handlePrestador={this.handlePrestador} valor={this.state.ips_id} error={this.state.errors['tipoPrestador']} mensaje={this.state.errorMensajes['tipoPrestador']} errorIps={this.state.errors['ips']} mensajeIps={this.state.errorMensajes['ips']} />
-                                    <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias} />
+                                    
+                                    <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias} handleMaxDiasR={this.handleMaxDiasR} handleMaxDiasP={this.handleMaxDiasP}/> 
                                 </div>
                             </div>
                         </div>

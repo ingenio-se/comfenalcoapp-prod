@@ -30,7 +30,7 @@ export default function Combomodop(props){
 
     return(
         <div className="form-group">
-            <label htmlFor="modoPrestacion">Modo prestación</label>
+            <label htmlFor="modoPrestacion">Modo prestación del servicio</label>
             <select id="modoPrestacion" className="form-control" onChange={handleModop} value={props.value}>
                 <option value={0}></option>
                 {

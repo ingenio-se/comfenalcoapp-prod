@@ -200,7 +200,7 @@ class IncapacidadFront extends Component {
         const toastType = toastOptions[type]
         toast[toastType](arg, {
             position: "top-right",
-            autoClose: 2000,
+            autoClose: 4000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
