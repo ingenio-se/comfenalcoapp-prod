@@ -223,6 +223,8 @@ class ExcelController extends Controller
                 'licencias.created_at',
                 'licencias.updated_at',
                 'licencias.deleted_at',
+                'fecha_probable_parto',
+                'certificados'
             )->leftJoin('causae','causae.id','=','licencias.causa_externa')
             ->leftJoin('ips','ips.id','=','licencias.ips')
             ->leftJoin('medicos','medicos.id','=','licencias.medico_id')

@@ -73,6 +73,8 @@ class LicenciasExport implements FromCollection, WithHeadings, ShouldAutoSize
             'created_at',
             'updated_at',
             'deleted_at',
+            'fecha_probable_parto',
+            'certificados'
         ];
     }
 }
