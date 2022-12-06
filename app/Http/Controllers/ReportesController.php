@@ -75,7 +75,10 @@ class ReportesController extends Controller
             'observacion_estado',
             'incapacidad.created_at',
             'incapacidad.updated_at',
-            'programa_afiliado as descripcion_programa_afiliado'
+            'programa_afiliado as descripcion_programa_afiliado',
+            'grupo_servicio',
+            'modo_prestacion',
+            'incapacidad_retroactiva'
         )->leftJoin('ips','ips.id','=','incapacidad.ips')
         ->leftJoin('causae','causae.id','=','incapacidad.causa_externa')
         ->leftJoin('estados_incapacidad','estados_incapacidad.id','=','incapacidad.estado_id')

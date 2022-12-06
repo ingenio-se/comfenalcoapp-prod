@@ -74,7 +74,10 @@ class IncapacidadExport implements FromCollection, WithHeadings, ShouldAutoSize
             'observacion_estado',
             'created_at',
             'updated_at',
-            'descripcion_programa_afiliado'
+            'descripcion_programa_afiliado',
+            'grupo_servicio',
+            'modo_prestacion',
+            'incapacidad_retroactiva'
         ];
     }
 }
