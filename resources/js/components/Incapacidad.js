@@ -57,7 +57,7 @@ class IncapacidadFront extends Component {
             causae : '0',
             grupos : '0',
             modop : '0',
-            incar : '0',
+            incar : '1',
             contingencia : '0',
             tipoDocAportante:'',
             numDocAportante: '',
@@ -985,7 +985,7 @@ class IncapacidadFront extends Component {
             newState.errorMensajes.modop = "Modo prestación requerido";
             resp=false;   
         }
-        if (this.state.incar == 0 && this.state.band_retroactiva == true){
+        if (this.state.incar == 1 && this.state.band_retroactiva == true){
             newState.errors.incar = "visible";
             newState.errorMensajes.incar = "Incapacidad retroactiva requerido";
             resp=false;   

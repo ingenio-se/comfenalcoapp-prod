@@ -32,7 +32,7 @@ export default function Comboincapacidadr(props){
         <div className="form-group">
             <label htmlFor="incaR">Incapacidad retroactiva</label>
             <select id="incaR" className="form-control" onChange={handleIncar} value={props.value}>
-                <option value={0}></option>
+                
                 {
                     incar.map(incar => <option key={incar.id} value={incar.id}>{incar.incapacidad_retroactiva}</option>)
                 }
