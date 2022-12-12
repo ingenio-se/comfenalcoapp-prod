@@ -329,7 +329,7 @@ class IncapacidadFront extends Component {
        // console.log(validaciones);
        
         //this.getNumeroIncapacidad();
-        let url = 'validacionDerechos2022/' + tipoDocumento + "/" + numeroIdentificacion;
+        let url = 'validacionDerechos/' + tipoDocumento + "/" + numeroIdentificacion;
         await axios
             .get(url, {
                 tipoDocumento: tipoDocumento,
