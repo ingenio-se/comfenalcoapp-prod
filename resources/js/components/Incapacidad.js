@@ -741,7 +741,7 @@ class IncapacidadFront extends Component {
         } else {
             this.setState({ diasReconocidos: 0 });
         }
-        this.reviewProrroga()
+        //this.reviewProrroga()
     }
     handleCausa(e){
         //console.log(e);
