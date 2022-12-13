@@ -698,7 +698,7 @@ class IncapacidadFront extends Component {
     }
     handleDiasSolicitados(e){
         let dias = e.target.value;
-        if (dias > this.state.diasMaximosEspecialidad){
+        if (parseInt(dias) > this.state.diasMaximosEspecialidad){
             this.handleToast("La cantidad máxima de días posibles es " + this.state.diasMaximosEspecialidad,'warning');
         }
         else{
