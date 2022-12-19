@@ -27,6 +27,7 @@ export default function Medico(props) {
                 props.handleMaxDias(resp.data.dias[0]['dias_maximos']);
                 props.handleMaxDiasR(resp.data.dias[0]['dias_maximos_retroactivo']);
                 props.handleMaxDiasP(resp.data.dias[0]['dias_maximos_prospectivo']);
+                props.handleEspecialidad(resp.data.data[0]['especialidad']);
 
                 /*
                 if ((resp.data.data[0]['especialidad']==1)||(resp.data.data[0]['especialidad']==3)){

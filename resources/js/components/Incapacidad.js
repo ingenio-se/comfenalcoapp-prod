@@ -52,6 +52,7 @@ class IncapacidadFront extends Component {
             diasMaximosEspecialidad:0,
             diasMaximosRetroactivo:0,
             diasMaximosProspectivo:0,
+            especialidad:0,
             fechaFinIncapacidad : today,
             diasReconocidos : 0,
             causae : '0',
@@ -167,7 +168,7 @@ class IncapacidadFront extends Component {
         this.handleMaxDias =this.handleMaxDias.bind(this);
         this.handleMaxDiasR =this.handleMaxDiasR.bind(this);
         this.handleMaxDiasP =this.handleMaxDiasP.bind(this);
-
+        this.handleEspecialidad =this.handleEspecialidad.bind(this);
 
       
         this.activarGeneracion=this.activarGeneracion.bind(this);
@@ -454,7 +455,7 @@ class IncapacidadFront extends Component {
                 this.setState({
                     cronico: resp.data.data,
                 });
-                if (this.state.diasMaximosEspecialidad >0){
+                if (this.state.especialidad != 5){
                     if (this.state.visible != 'oculto'){
                         this.setState({
                             visible:resp.data.data.visible,
@@ -485,6 +486,11 @@ class IncapacidadFront extends Component {
     handleMaxDiasP(dato) {
         this.setState({
             diasMaximosProspectivo: dato
+        });
+    }
+    handleEspecialidad(dato) {
+        this.setState({
+            especialidad: dato
         });
     }
     handleFechaAtencion(e) {
@@ -850,7 +856,7 @@ class IncapacidadFront extends Component {
         //console.log(this.state)
         //console.log(parseInt(this.state.diasSolicitados));
         var esp = "otros"
-        if (this.state.diasMaximosEspecialidad == 0){
+        if (this.state.especialidad == 5){
             esp = "laboral"
         }
 
@@ -1298,7 +1304,7 @@ class IncapacidadFront extends Component {
                         <div className="card-body texto">
         
                                 <Comboips handleIpsChange={this.handleIpsChange} handlePrestador={this.handlePrestador} valor={this.state.ips_id} error={this.state.errors['tipoPrestador']} mensaje={this.state.errorMensajes['tipoPrestador']} errorIps={this.state.errors['ips']} mensajeIps={this.state.errorMensajes['ips']}/>
-                                <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias} handleMaxDiasR={this.handleMaxDiasR} handleMaxDiasP={this.handleMaxDiasP}/> 
+                                <Medico handleMedico={this.handleMedico} handleMaxDias={this.handleMaxDias} handleMaxDiasR={this.handleMaxDiasR} handleMaxDiasP={this.handleMaxDiasP} handleEspecialidad={this.handleEspecialidad}/> 
                         </div>
                     </div>
                 </div>

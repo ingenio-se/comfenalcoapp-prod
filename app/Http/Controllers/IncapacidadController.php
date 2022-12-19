@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Descripcionesp;
 use App\Clasesa;
 use App\Estadosa;
+use App\Validacion;
 use Illuminate\Support\Facades\Http;
 class IncapacidadController extends Controller
 {
@@ -42,11 +43,18 @@ class IncapacidadController extends Controller
         }
         else{
                 $hoy = date("Y-m-d H:i:s"); 
+
+                $validacion = Validacion::where('id',1)->first();
+                $host = $validacion->url;
+                $username=$validacion->username;
+                $password = $validacion->password;
+                /*
                 $host="https://virtual.comfenalcovalle.com.co/esb/V2RESTJSONChannelAdapter";
                 //$host = "https://virtual.comfenalcovalle.com.co/esbtest/V2RESTJSONChannelAdapter";
                 $username = "INGENIOSE";
                 $password = "1nG3n1o5e";
-        
+                */
+
                 $headers = array(
                     'Content-type: charset=iso-8859-1; charset=utf-8',
                     'Authorization: Basic '. base64_encode("$username:$password")
