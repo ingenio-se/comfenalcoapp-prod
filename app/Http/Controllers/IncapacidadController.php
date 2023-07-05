@@ -14,10 +14,74 @@ class IncapacidadController extends Controller
     public function inicio(){
         return view('incapacidades.incapacidad');
     }
+    
     public function validacion($tipo,$numero){
-        
         $tipoDocumento = $tipo;
         $numeroIdentificacion = $numero;
+        
+        if ($numeroIdentificacion == "" || $tipoDocumento == "") {
+            echo json_encode('error');
+        }
+        else{
+                $hoy = date("Y-m-d H:i:s"); 
+
+                $validacion = Validacion::where('id',1)->first();
+                $host = $validacion->url;
+                $username=$validacion->username;
+                $password = $validacion->password;
+                /*
+                $host = "https://webservice.epsdelagente.com.co/api/Servicios/ValidacionDerechos";
+                //$host="https://webservice.epscomfenalcovalle.boxalud.com/api/Servicios/ValidacionDerechos";
+                //$host = "https://virtual.comfenalcovalle.com.co/esbtest/V2RESTJSONChannelAdapter";
+                $username = "SUCURSALVIRTUALEPS";
+                $password = "e95SucV7rtual";
+        */
+                $headers = array(
+                    'Accept: */*',
+                    'Content-Type:application/json',
+                    'Authorization: Basic '. base64_encode("$username:$password")
+                );
+                $payload = '{
+                    "requestMessageOut": {
+                    "header": { "invokerDateTime":"2022-10-0610:03:00",
+                    "moduleId": "PRUEBAS",
+                    "systemId": "PRUEBAS",
+                    "messageId": "PRUEBAS|CONSULTA|CE340590", "logginData": {
+                    "sourceSystemId": "",
+                    "destinationSystemId": "" },
+                    "destination": { "namespace":
+                    "http://co/com/comfenalcovalle/esb/ws/ValidadorServiciosEps",
+                    "name": "ValidadorServiciosEps",
+                    "operation": "execute" },
+                    "securityCredential": { "userName": "", "userToken": ""
+                    }, "classification": {
+                    "classification": "" }
+                    }, "body": {
+                    "request": { "validadorRequest": {
+                    "abreviatura": "'.$tipoDocumento.'",
+                    "identificacion": "'.$numeroIdentificacion.'" }
+                    } }
+                    } }';
+                //dd($payload);
+                header("Content-Type:application/json");
+                $process = curl_init($host);
+                curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($process, CURLOPT_HEADER, 0);
+                curl_setopt($process, CURLOPT_USERPWD, $username . ":" . $password);
+                curl_setopt($process, CURLOPT_TIMEOUT, 30);
+                curl_setopt($process, CURLOPT_POST, 1);
+                curl_setopt($process, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt($process, CURLOPT_ENCODING, "UTF-8" );
+                curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
+                $return = curl_exec($process);
+                
+                curl_close($process);
+            
+                //finally print your API response
+                echo utf8_encode($return);
+        }
+        //$tipoDocumento = $tipo;
+        //$numeroIdentificacion = $numero;
         
        /*return view('incapacidades.validacion',[
             'tipoDocumento' => $tipoDocumento, 
@@ -37,7 +101,7 @@ class IncapacidadController extends Controller
          //respuesta varios
         //return '{"responseMessageOut":{"header":{"invokerDateTime":"2020-09-23 16:37:36","moduleId":"CHATBOTEPS","systemId":"CHATBOTEPS","messageId":"CHATBOTEPS |1501098|CC","logginData":{"sourceSystemId":"NA","destinationSystemId":"NA"},"destination":{"namespace":"http:\/\/co\/com\/comfenalcovalle\/esb\/ws\/ValidadorServiciosEps","name":"ValidadorServiciosEps","operation":"execute"},"responseStatus":{"statusCode":"SUCCESS"}},"body":{"response":{"validadorResponse":{"xsi":"http:\/\/www.w3.org\/2001\/XMLSchema-instance","Derechos":{"DerechoPrestacion":"SI","Programa":"EP","DescripcionPrograma":"Por plan de beneficios de salud","MENSAJE":"El usuario con tipo CC y numero 1501098 SI tiene derecho a prestación de servicios, Por plan de beneficios de salud"},"DsAfiliado":{"Afiliado":{"EstadoDescripcion":"Afiliado","TipoDocAfiliado":"CC","TipoDocEmpresa":"NI","TipoDocTrabajador":"CC","NombreDepartamento":"VALLE","NombreMunicipio":"CALI","TidTrabajador":"1","IDTrabajador":"1501098","Nombre":"EDGAR ","PrimerApellido":"VIVEROS","SegundoApellido":"DOMINGUEZ","FechaNacimiento":"1963-10-13T00:00:00","Estrato":"1","Sexo":"M","IDEmpresa":"800115720","TidEmpresa":"2","SedeCapita":"IPS RIO CAUCA","IdAfiliado":"1501098","TIdAfiliado":"1","FechaAfiliacion":"2011-01-18T00:00:00","Estado":"0","IdEntidad":"12","Direccion":"CALLE 72 L3 28E 165","Telefono":"4278416","NombreEmpresa":"RG DISTRIBUCIONES LIMITADA","Telefono2":{},"IdCapita":"900922290","IdMunicipio":"76001","EstadoCivil":"UL","IdUnico":"9999022619406473","email":{},"FechaAfiliacionSSS":{},"Programa":"EP","IdPrograma":"121201","DescripcionPrograma":"Dependiente","IdRegional":"1","DiasCotizados":{},"IdArp":{},"IdDiscapacidad":{},"DirEmpresa":"CL 8 9 46","IdHistoria09":{},"IdHistoria12":"1650327","FechaDesafiliacion":"0","IdConyuge":{},"CabezaFamilia":{},"NombreTrabajador":"EDGAR VIVEROS DOMINGUEZ","Principal":"S","IdBarrio":"10001","FechaRetiro":"0","PorcentajeDescuento":{},"TipoDescuento":{},"IdIpsCapita":"19008","SemCotSSS":"132","ClaseAfiliacion":"COT","CodigoRegional":"1"}},"DsSede":{"Sede":{"NitEntidad":"805027261","Descripcion":"ESE CENTRO CALI INPE"},"SedeAtencion":{"IdSedeAtencion":"900922290","SedeAtencion":"IPS RIO CAUCA","CodSedeAtencion":"19008"}},"DsGrupoFamiliar":{"Beneficiario":[{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"1501098","EstadoCaja":"NA","EstadoPOS":"AF","EstadoPCO":"NA","Nombre":"EDGAR ","PrimerApellido":"VIVEROS","SegundoApellido":"DOMINGUEZ","Sexo":"M","TidTrabajador":"1","IDTrabajador":"1501098"},{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"25620542","EstadoCaja":"NA","EstadoPOS":"RE","EstadoPCO":"NA","Nombre":"ANA RUTH","PrimerApellido":"OREJUELA","SegundoApellido":"VALENCIA","Sexo":"F","TidTrabajador":"1","IDTrabajador":"1501098"}]}}}}}}';
        // return '{"responseMessageOut":{"header":{"invokerDateTime":"2020-07-28 17:13:35","moduleId":"CHATBOTEPS","systemId":"CHATBOTEPS","messageId":"CHATBOTEPS |16626278|CC","logginData":{"sourceSystemId":"NA","destinationSystemId":"NA"},"destination":{"namespace":"http:\/\/co\/com\/comfenalcovalle\/esb\/ws\/ValidadorServiciosEps","name":"ValidadorServiciosEps","operation":"execute"},"responseStatus":{"statusCode":"SUCCESS"}},"body":{"response":{"validadorResponse":{"xsi":"http:\/\/www.w3.org\/2001\/XMLSchema-instance","Derechos":{"DerechoPrestacion":"SI","Programa":"EP","DescripcionPrograma":"Por plan de beneficios de salud","MENSAJE":"El usuario con tipo CC y numero 16626278 SI tiene derecho a prestación de servicios, Por plan de beneficios de salud"},"DsAfiliado":{"Afiliado":{"EstadoDescripcion":"Afiliado","TipoDocAfiliado":"CC","TipoDocEmpresa":"NI","TipoDocTrabajador":"CC","NombreDepartamento":"VALLE","NombreMunicipio":"CALI","TidTrabajador":"1","IDTrabajador":"16626278","Nombre":"JUAN CARLOS","PrimerApellido":"LUNA","SegundoApellido":"CUELLAR","FechaNacimiento":"1959-03-20T00:00:00","Estrato":"2","Sexo":"M","IDEmpresa":"900336004","TidEmpresa":"2","SedeCapita":"MODELO DE ATENCION DE SALUD CIS EMCALI","IdAfiliado":"16626278","TIdAfiliado":"1","FechaAfiliacion":"2019-09-01T00:00:00","Estado":"0","IdEntidad":"12","Direccion":"CL 20 118 235 T2 APT 508","Telefono":"3396742","NombreEmpresa":"ADMINISTRADORA COLOMBIANA DE PENSIONES COLPENSIONES","Telefono2":{},"IdCapita":"890303093","IdMunicipio":"76001","EstadoCivil":"CA","IdUnico":"9999022619003651","email":"JCLUNA57@HOTMAIL.COM","FechaAfiliacionSSS":{},"Programa":"EP","IdPrograma":"121205","DescripcionPrograma":"Pensionado","IdRegional":"1","DiasCotizados":{},"IdArp":{},"IdDiscapacidad":{},"DirEmpresa":"CRA 10 N 72 33 TO B","IdHistoria09":{},"IdHistoria12":"179870","FechaDesafiliacion":"0","IdConyuge":"9999022620123312","CabezaFamilia":"S","NombreTrabajador":"JUAN CARLOS LUNA CUELLAR","Principal":"S","IdBarrio":"0","FechaRetiro":"0","PorcentajeDescuento":{},"TipoDescuento":{},"IdIpsCapita":"2024","SemCotSSS":"1152","ClaseAfiliacion":"COT","CodigoRegional":"1"}},"DsSede":{"Sede":[{"NitEntidad":"800168722","Descripcion":"LA OPTICA EMCALI"},{"NitEntidad":"890307534","Descripcion":"OPTOMETRIA EMCALI"},{"NitEntidad":"900127525","Descripcion":"CIC-VITAL EMCAL"},{"NitEntidad":"900612531","Descripcion":"SEDE EMCALI"}],"SedeAtencion":{"IdSedeAtencion":"890303093","SedeAtencion":"MODELO DE ATENCION DE SALUD CIS EMCALI","CodSedeAtencion":"2024"}},"DsGrupoFamiliar":{"Beneficiario":[{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"16626278","EstadoCaja":"NA","EstadoPOS":"AF","EstadoPCO":"NA","Nombre":"JUAN CARLOS","PrimerApellido":"LUNA","SegundoApellido":"CUELLAR","Sexo":"M","TidTrabajador":"1","IDTrabajador":"16626278"},{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"30038121","EstadoCaja":"NA","EstadoPOS":"AF","EstadoPCO":"NA","Nombre":"MARIA ELENA","PrimerApellido":"MARTINEZ","SegundoApellido":{},"Sexo":"F","TidTrabajador":"1","IDTrabajador":"16626278"},{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"31915457","EstadoCaja":"NA","EstadoPOS":"AF","EstadoPCO":"NA","Nombre":"PATRICIA ","PrimerApellido":"MARTINEZ","SegundoApellido":{},"Sexo":"F","TidTrabajador":"1","IDTrabajador":"16626278"},{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"TI","TIdBeneficiario":"3","IDBeneficiario":"1006100013","EstadoCaja":"NA","EstadoPOS":"AF","EstadoPCO":"NA","Nombre":"MARIA JULIANA","PrimerApellido":"LUNA","SegundoApellido":"MARTINEZ","Sexo":"F","TidTrabajador":"1","IDTrabajador":"16626278"},{"TipoDocTrabajador":"CC","TipoDocBeneficiario":"CC","TIdBeneficiario":"1","IDBeneficiario":"1144057372","EstadoCaja":"NA","EstadoPOS":{},"EstadoPCO":"NA","Nombre":"ANA MARIA","PrimerApellido":"LUNA","SegundoApellido":"MARTINEZ","Sexo":"F","TidTrabajador":"1","IDTrabajador":"16626278"}]}}}}}}';
-
+        /*
         if ($numeroIdentificacion == "" || $tipoDocumento == "") {
             echo json_encode('error');
         }
@@ -54,7 +118,7 @@ class IncapacidadController extends Controller
                 $username = "INGENIOSE";
                 $password = "1nG3n1o5e";
                 */
-
+                /*
                 $headers = array(
                     'Content-type: charset=iso-8859-1; charset=utf-8',
                     'Authorization: Basic '. base64_encode("$username:$password")
@@ -108,7 +172,7 @@ class IncapacidadController extends Controller
             
                 //finally print your API response
                 echo utf8_encode($return);
-        }
+        }*/
     }
     public function validacionD($estadoa,$clasea,$programa){
       
@@ -157,11 +221,18 @@ class IncapacidadController extends Controller
         }
         else{
                 $hoy = date("Y-m-d H:i:s"); 
-                $host="https://webservice.epscomfenalcovalle.boxalud.com/api/Servicios/ValidacionDerechos";
+
+                $validacion = Validacion::where('id',1)->first();
+                $host = $validacion->url;
+                $username=$validacion->username;
+                $password = $validacion->password;
+                /*
+                $host = "https://webservice.epsdelagente.com.co/api/Servicios/ValidacionDerechos";
+                //$host="https://webservice.epscomfenalcovalle.boxalud.com/api/Servicios/ValidacionDerechos";
                 //$host = "https://virtual.comfenalcovalle.com.co/esbtest/V2RESTJSONChannelAdapter";
                 $username = "SUCURSALVIRTUALEPS";
                 $password = "e95SucV7rtual";
-        
+        */
                 $headers = array(
                     'Accept: */*',
                     'Content-Type:application/json',
