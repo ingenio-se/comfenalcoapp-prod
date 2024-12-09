@@ -28,7 +28,7 @@
         "@fortawesome/fontawesome-free": "^5.15.1",
         "create-react-class": "^15.7.0",
         "fuse.js": "^6.4.3",
-        "moment": "^2.29.1",
+        "moment": "^2.29.4",
         "react-bootstrap": "^1.4.0",
         "react-bootstrap-date-picker": "^5.1.0",
         "react-paginate": "^6.5.0",
