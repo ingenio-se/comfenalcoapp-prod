@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import TableCie10 from './TableCie10.js';
+import TableCie11 from './TableCie11.js';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
@@ -15,7 +16,7 @@ class Cie10Admin extends Component {
             cies: '',
             modalOpen: false,
             codigo:'',
-            campoBusqueda:'',
+            campoBusqueda:'codigo',
             textoBusqueda:'',
             cie10Ed:{},
             errors : {
@@ -23,11 +24,11 @@ class Cie10Admin extends Component {
             },
             errorMensajes :{
                 
-            }
+            },  
+            version: "CIE10" // <-- new state for version toggle
         }
         // bind
         this.getSystemCie10 = this.getSystemCie10.bind(this);
-       
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validarForm = this.validarForm.bind(this);
         this.clearErrors = this.clearErrors.bind(this);
@@ -38,25 +39,78 @@ class Cie10Admin extends Component {
         this.handleCerrarModal = this.handleCerrarModal.bind(this);
         this.handleGuardar = this.handleGuardar.bind(this);
         this.handleBuscar = this.handleBuscar.bind(this);
-        this.getSystemCie10();
+        this.handleVersionToggle = this.handleVersionToggle.bind(this); // bind new toggle handler
+        //this.getSystemCie10();
     }
-    handleBuscar(){
-        let url = 'buscarCie10/' + this.state.campoBusqueda + "/" + this.state.textoBusqueda
-        axios.get(url)
-            .then(resp => {
-                console.log(resp.data.data);
-                this.setState({
-                    cies: resp.data.data,
+    componentDidMount() {
+        // Fetch the version from the system config table when component mounts
+        this.fetchSystemVersion();
+    }
+    fetchSystemVersion() {
+        axios.get('/api/system-config/get-cie-version')
+            .then(response => {
+                const newVersion = response.data.version;
+                this.setState({ version: newVersion }, () => {
+                    // After state is updated, load the corresponding data:
+                    if (newVersion === "CIE10") {
+                        this.getSystemCie10();
+                    } else {
+                        this.getSystemCie11();
+                    }
                 });
-                this.setState({
-                    modalOpen: true,
-                    
-                });
+            })
+            .catch(error => {
+                console.error('Error fetching system version', error);
+            });
+    }
+    handleVersionToggle() {
+        const newVersion = this.state.version === "CIE10" ? "CIE11" : "CIE10";
+        this.setState({ version: newVersion }, () => {
+            // Optionally load corresponding system data on toggle change.
+            if (this.state.version === "CIE10") {
+                this.getSystemCie10();
+            } else {
+                this.getSystemCie11();
+            }
+        });
+        axios.post('/api/system-config/update-cie-version', { version: newVersion })
+            .then(response => {
+                console.log('System configuration updated:', response.data);
+            })
+            .catch(error => {
+                console.error('Error updating system configuration', error);
+            });
+    }
 
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    handleBuscar() {
+        // Use different endpoints depending on the version.
+        if (this.state.version === "CIE10") {
+            let url = 'buscarCie10/' + this.state.campoBusqueda + "/" + this.state.textoBusqueda;
+            axios.get(url)
+                .then(resp => {
+                    console.log(resp.data.data);
+                    this.setState({
+                        cies: resp.data.data,
+                        modalOpen: true,
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else { // For CIE11
+            let url = 'buscarCie11/' + this.state.campoBusqueda + "/" + this.state.textoBusqueda;
+            axios.get(url)
+                .then(resp => {
+                    console.log(resp.data.data);
+                    this.setState({
+                        cies: resp.data.data,
+                        modalOpen: false,
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
     handleGuardar(){
         let url = 'updateCie10'
@@ -123,31 +177,63 @@ class Cie10Admin extends Component {
         
     }   
     getSystemCie10() {
-        let url = 'getSystemCie10'
+       // For default load when version is CIE10
+        if (this.state.version === "CIE10") {
+            let url = 'getSystemCie10';
+            axios.get(url)
+                .then(resp => {
+                    this.setState({
+                        cies: resp.data.data,
+                        modalOpen: false,
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else {
+            // If version is not CIE10, load CIE11 default data.
+            this.getSystemCie11();
+        }
+    }
+    getSystemCie11() {
+        // New method to load system CIE11 records
+        let url = 'getSystemCie11';
         axios.get(url)
             .then(resp => {
-                //console.log(resp.data.data);
                 this.setState({
                     cies: resp.data.data,
                     modalOpen: false,
                 });
-
             })
             .catch(err => {
-                console.log(err)
-            })
-
+                console.log(err);
+            });
     }
     
     render() {
-        const { cies } = this.state;
-        const { cie10Ed } = this.state
+        const { cies, version, cie10Ed } = this.state; 
         return (
             <div>
                 <div className="row mt-5">
                     <div className="col-md-12">
                         <div className="card">
-                            <div className="card-header bg2 titulo">Búsqueda</div>
+                            <div className="card-header bg2 titulo">
+                                Búsqueda
+                                <div className="float-right">
+                                    <div className="custom-control custom-switch">
+                                        <input 
+                                            type="checkbox" 
+                                            className="custom-control-input" 
+                                            id="versionSwitch" 
+                                            checked={version === "CIE11"} 
+                                            onChange={this.handleVersionToggle} 
+                                        />
+                                        <label className="custom-control-label" htmlFor="versionSwitch">
+                                            {version}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="card-body texto">
                                 <div className="row">
                                     <div className="col-4">
@@ -173,21 +259,46 @@ class Cie10Admin extends Component {
                 <div className="row mt-5">
                     <div className="col-md-12">
                         <div className="card">
-                            <div className="card-header bg2 titulo"></div>
+                            <div className="card-header bg2 titulo">
+                                { version === "CIE10" ? 'CIE10 Codes' : 'CIE11 Codes' }
+                            </div>
                             <div className="card-body texto">
                                 <table className="table table-hover table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"></th>
-                                            <th scope="col">Código</th>
-                                            <th scope="col">Descripción</th>
-                                            <th scope="col">Max. días</th>
-                                            <th scope="col">Capítulo</th>
-                                            <th scope="col">Categoría</th>
-                                        </tr>
-                                    </thead>
-                                    <TableCie10 cies={cies} handleEdition ={this.handleEdition} handleEliminar ={this.handleEliminar}/>
-                                    
+                                    { version === "CIE10" ? (
+                                        <>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Código</th>
+                                                    <th scope="col">Descripción</th>
+                                                    <th scope="col">Max. días</th>
+                                                    <th scope="col">Capítulo</th>
+                                                    <th scope="col">Categoría</th>
+                                                </tr>
+                                            </thead>
+                                            <TableCie10 
+                                                cies={cies} 
+                                                handleEdition={this.handleEdition} 
+                                                handleEliminar={this.handleEliminar} 
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">Código CIE10</th>
+                                                    <th scope="col">Código CIE11</th>
+                                                    <th scope="col">Título CIE11</th>
+                                                </tr>
+                                            </thead>
+                                            <TableCie11 
+                                                cies={cies} 
+                                                handleEdition={this.handleEdition} 
+                                                handleEliminar={this.handleEliminar} 
+                                            />
+                                        </>
+                                    )}
                                 </table>
                             </div>
                         </div>

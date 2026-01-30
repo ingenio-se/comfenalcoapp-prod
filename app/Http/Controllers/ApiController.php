@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ips;
 use App\Cie10;
+use App\Cie11;
 use App\Medico;
 use App\Causae;
 use App\Incapacidad;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Http\Controllers\IncapacidadController;
 use PDF;
+
 
 use Auth;
 
@@ -106,15 +108,39 @@ class ApiController extends Controller
         $estados=Estadosi::where('activo',1)->orderBy('estado','asc')->get();
         return $estados;
     }
-    public function search($tipo,$value){
-        if ($tipo=="diagnostico"){
-            $data=Cie10::where('descripcion_diagnostico','like','%'.$value.'%')
-            ->orWhere('codigo',$value)
-            ->where('num_dias_maximo_solicitud','>',0)->get();
+    public function search($tipo, $value)
+    {
+        // Retrieve the current system configuration for the CIE version.
+        $version = \DB::table('system_config')
+                    ->where('config_key', 'cie_version')
+                    ->value('config_value');
+
+        if ($version === 'CIE11') {
+            if ($tipo == "diagnostico") {
+                if (strpos($value, '&') !== false) {
+                    $parts = explode('&', $value);
+                    $searchText = trim(end($parts));
+                } else {
+                    $searchText = $value;
+                }
+                $data = Cie11::where('titulo_cie11', 'like', '%'.$searchText.'%')
+                            ->orWhere('codigo_cie11', $searchText)
+                            ->get();
+            } elseif ($tipo == "diagnosticoLicencia") {
+                $data = Cie11::where('tipo_licencia', $value)->get();
+            }
+        } else {
+            // Default to CIE10 search logic.
+            if ($tipo == "diagnostico") {
+                $data = Cie10::where('descripcion_diagnostico', 'like', '%'.$value.'%')
+                            ->orWhere('codigo', $value)
+                            ->where('num_dias_maximo_solicitud', '>', 0)
+                            ->get();
+            } elseif ($tipo == "diagnosticoLicencia") {
+                $data = Cie10::where('tipo_licencia', $value)->get();
+            }
         }
-        if ($tipo=="diagnosticoLicencia"){
-            $data=Cie10::where('tipo_licencia',$value)->get();
-        }
+
         return response()->json([
             'data' => $data
         ]);
@@ -221,6 +247,10 @@ class ApiController extends Controller
             }*/
             $id =(int)$datos['id'];
 
+            $version = \DB::table('system_config')
+                ->where('config_key', 'cie_version')
+                ->value('config_value');
+
             if (Incapacidad::where('id',$id)->where('prorrogaid',$datos['prorrogaId'])
                 ->where('tipo_documento_afiliado',$datos['tipoDocAfiliado'])
                 ->where('num_documento_afiliado',$datos['IDTrabajador'])
@@ -271,10 +301,13 @@ class ApiController extends Controller
 
                 'grupo_servicio' => $datos['grupos'],
                 'modo_prestacion' => $datos['modop'],
-                'incapacidad_retroactiva' => $datos['incar']
+                'incapacidad_retroactiva' => $datos['incar'],
+
+                'cie_version' => $version,
 
             ]);
-                
+            
+
             return  "Incapacidad almacenada";
 
             }
@@ -506,6 +539,16 @@ class ApiController extends Controller
             'data' => $data
         ]);
     }
+    public function getSystemCie11(Request $request){
+        $data = \DB::table('cie11')
+                ->select('codigo_cie10', 'codigo_cie11', 'titulo_cie11')
+                ->orderBy('id','asc')
+                ->limit(10)
+                ->get();
+        return response()->json([
+            'data' => $data
+    ]);
+}
     public function getCie10($id){
         
         $data=Cie10::where('id',$id)->orderBy('id','asc')->first();
@@ -521,7 +564,24 @@ class ApiController extends Controller
             'data' => $data
         ]);
     }
-    
+    public function buscarCie11($campo, $texto){
+        $allowed = ['codigo_cie10', 'codigo_cie11', 'titulo_cie11'];
+        if ($campo == "codigo"){
+            $campo = "codigo_cie11";
+        }
+        if (!in_array($campo, $allowed)) {
+            return response()->json(['data' => []]);
+        }
+        
+        $data = \DB::table('cie11')
+                ->select('codigo_cie10', 'codigo_cie11', 'titulo_cie11')
+                ->where($campo, 'like', '%'.$texto.'%')
+                ->get();
+        
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 
     public function getSystemEstados(Request $request){
         

@@ -27,7 +27,7 @@ class MenuGenerales extends Component {
                         <a className="nav-link active" data-toggle="tab" href="#ce">Causa externa</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href="#cie10">Cie10</a>
+                        <a className="nav-link" data-toggle="tab" href="#cie10">Cie10-11</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" data-toggle="tab" href="#diase">Días especialidades</a>

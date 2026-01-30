@@ -45,8 +45,8 @@ class Incapacidad extends Model
             'validacion',
             'grupo_servicio',
             'modo_prestacion',
-            'incapacidad_retroactiva'
-          
+            'incapacidad_retroactiva',
+            'cie_version'
     ];
     public function estado()
     {
@@ -60,5 +60,19 @@ class Incapacidad extends Model
     {
         return $this->belongsTo('App\Cie10','codigo_diagnostico','codigo');
     }
-    
+    // Accessor to return a diagnostic record either from Cie10 or, if not found, from Cie11
+    public function getDiagnosticoAttribute($value)
+    {
+        // First try the Cie10 relation
+        $cie10 = $this->diagnostico()->first();
+        if ($cie10) {
+            return $cie10;
+        }
+        // If not found, query CIE11 using the DB facade
+        $cie11 = \DB::table('cie11')
+                        ->select('codigo_cie10', 'codigo_cie11', \DB::raw('titulo_cie11 as descripcion_diagnostico'))
+                        ->where('codigo_cie11', $this->codigo_diagnostico)
+                        ->first();
+        return $cie11;
+    }
 }

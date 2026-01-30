@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SystemConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,3 +14,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/system-config/get-cie-version', [SystemConfigController::class, 'getCieVersion']);
+Route::post('/system-config/update-cie-version', [SystemConfigController::class, 'updateCieVersion']);

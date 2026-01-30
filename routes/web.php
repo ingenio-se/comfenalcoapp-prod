@@ -69,6 +69,7 @@ Route::get('buscarHistoricoUltimaDias/{tipo}/{numero}','ApiController@buscarHist
 Route::get('getSystemUsers','ApiController@getSystemUsers');
 Route::get('getSystemCausas','ApiController@getSystemCausas');
 Route::get('getSystemCie10','ApiController@getSystemCie10');
+Route::get('getSystemCie11','ApiController@getSystemCie11');
 Route::get('getCie10/{id}','ApiController@getCie10');
 Route::get('getSystemEstados','ApiController@getSystemEstados');
 Route::get('getSystemIps','ApiController@getSystemIps');
@@ -80,6 +81,7 @@ Route::post('getUser','ApiController@getUser');
 Route::post('getMedico','ApiController@getMedico');
 Route::get('getMedicosUsers','ApiController@getMedicosUsers');
 Route::get('buscarCie10/{campo}/{texto}','ApiController@buscarCie10');
+Route::get('buscarCie11/{campo}/{texto}','ApiController@buscarCie11');
 
 
 //reports
